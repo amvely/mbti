@@ -30,24 +30,44 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .loading-text{font-size:15px;font-weight:600;color:var(--sub);}
 .loading-sub{font-size:12px;margin-top:6px;}
 #error-msg{display:none;text-align:center;padding:60px 20px;}
-.score-hero{display:grid;grid-template-columns:1fr 160px 1fr;background:var(--bg2);border:1px solid var(--bd);border-radius:22px;overflow:hidden;margin-bottom:20px;animation:fadeUp .55s .1s ease both;}
-.score-side{padding:28px 30px 24px;display:flex;flex-direction:column;gap:5px;}
+.score-hero{display:grid;grid-template-columns:1fr auto 1fr;background:var(--bg2);border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin-bottom:12px;animation:fadeUp .55s .1s ease both;}
+.score-side{padding:14px 20px;display:flex;align-items:center;gap:14px;}
 .score-side.j{background:linear-gradient(140deg,rgba(91,156,246,.13) 0%,transparent 60%);}
-.score-side.p{background:linear-gradient(220deg,rgba(251,146,60,.13) 0%,transparent 60%);text-align:right;}
-.s-lbl{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
-.s-name{font-size:28px;font-weight:900;letter-spacing:-.5px;}
+.score-side.p{background:linear-gradient(220deg,rgba(251,146,60,.13) 0%,transparent 60%);flex-direction:row-reverse;}
+.s-lbl{display:none;}
+.s-name{font-size:18px;font-weight:900;letter-spacing:-.3px;}
 .score-side.j .s-name{color:var(--j);}
 .score-side.p .s-name{color:var(--p);}
-.s-wins{font-size:58px;font-weight:900;line-height:1;letter-spacing:-2px;}
-.score-side.j .s-wins{color:var(--j);text-shadow:0 0 32px var(--jg);}
-.score-side.p .s-wins{color:var(--p);text-shadow:0 0 32px var(--pg);}
-.s-unit{font-size:16px;font-weight:600;vertical-align:super;}
-.s-sub{font-size:12px;color:var(--muted);}
-.s-need{font-size:12px;font-weight:600;color:var(--sub);}
-.score-center{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);gap:10px;padding:20px 12px;}
-.vs-txt{font-size:16px;font-weight:900;color:rgba(255,255,255,.1);letter-spacing:4px;}
-.target-chip{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--gold);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:3px 12px;}
-.days-info{font-size:11px;color:var(--muted);text-align:center;line-height:1.8;font-weight:500;}
+.s-wins{font-size:38px;font-weight:900;line-height:1;letter-spacing:-1px;}
+.score-side.j .s-wins{color:var(--j);text-shadow:0 0 24px var(--jg);}
+.score-side.p .s-wins{color:var(--p);text-shadow:0 0 24px var(--pg);}
+.s-unit{font-size:13px;font-weight:600;vertical-align:super;}
+.s-meta{display:flex;flex-direction:column;gap:1px;}
+.s-sub{font-size:10px;color:var(--muted);}
+.s-need{font-size:10px;font-weight:600;color:var(--sub);}
+.score-center{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);gap:5px;padding:12px 18px;white-space:nowrap;}
+.vs-txt{font-size:13px;font-weight:900;color:rgba(255,255,255,.12);letter-spacing:3px;}
+.target-chip{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--gold);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:2px 10px;}
+.days-info{font-size:10px;color:var(--muted);text-align:center;line-height:1.7;font-weight:500;}
+/* 스트릭 배너 */
+.streak-banner{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:14px;margin-bottom:12px;position:relative;overflow:hidden;animation:fadeUp .55s .12s ease both;}
+.streak-banner::before{content:'';position:absolute;inset:0;pointer-events:none;}
+.streak-banner.j-streak::before{background:linear-gradient(90deg,rgba(91,156,246,.09),transparent 60%);}
+.streak-banner.p-streak::before{background:linear-gradient(90deg,rgba(251,146,60,.09),transparent 60%);}
+.streak-icon{font-size:24px;flex-shrink:0;animation:pulseIcon 1.6s ease-in-out infinite;}
+@keyframes pulseIcon{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.streak-body{flex:1;min-width:0;}
+.streak-main{font-size:13px;font-weight:800;line-height:1.3;}
+.streak-main.j{color:var(--j);}
+.streak-main.p{color:var(--p);}
+.streak-main em{font-style:normal;color:var(--gold);}
+.streak-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.streak-dots{display:flex;gap:5px;flex-shrink:0;}
+.s-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;}
+.s-dot.j{background:rgba(91,156,246,.2);border:1.5px solid var(--j);color:var(--j);}
+.s-dot.p{background:rgba(251,146,60,.2);border:1.5px solid var(--p);color:var(--p);}
+.s-dot.fire{background:rgba(251,191,36,.12);border:1.5px solid var(--gold);color:var(--gold);animation:firePulse .9s ease-in-out infinite alternate;}
+@keyframes firePulse{from{box-shadow:0 0 3px rgba(251,191,36,.3)}to{box-shadow:0 0 10px rgba(251,191,36,.7)}}
 .race-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:22px 26px;margin-bottom:20px;animation:fadeUp .55s .17s ease both;}
 .section-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .section-title{font-size:15px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:9px;}
@@ -240,7 +260,7 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-@media(max-width:720px){.score-hero{grid-template-columns:1fr 100px 1fr;}.s-wins{font-size:44px;}.stakes-row-grid{grid-template-columns:1fr;}}
+@media(max-width:720px){.score-hero{grid-template-columns:1fr auto 1fr;}.s-wins{font-size:30px;}.stakes-row-grid{grid-template-columns:1fr;}}
 @media(max-width:480px){.score-center{display:none;}.score-hero{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -268,11 +288,12 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
 <div id="dashboard" style="display:none">
   <div class="score-hero">
     <div class="score-side j">
-      <div class="s-lbl">Team J</div>
-      <div class="s-name">J팀</div>
       <div class="s-wins" id="j-wins">—</div>
-      <div class="s-sub">현재 승수</div>
-      <div class="s-need" id="j-need"></div>
+      <div class="s-meta">
+        <div class="s-name">J팀</div>
+        <div class="s-sub">현재 승수</div>
+        <div class="s-need" id="j-need"></div>
+      </div>
     </div>
     <div class="score-center">
       <div class="vs-txt">VS</div>
@@ -280,13 +301,17 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
       <div class="days-info" id="days-info"></div>
     </div>
     <div class="score-side p">
-      <div class="s-lbl">Team P</div>
-      <div class="s-name">P팀</div>
       <div class="s-wins" id="p-wins">—</div>
-      <div class="s-sub">현재 승수</div>
-      <div class="s-need" id="p-need"></div>
+      <div class="s-meta" style="text-align:right;">
+        <div class="s-name">P팀</div>
+        <div class="s-sub">현재 승수</div>
+        <div class="s-need" id="p-need"></div>
+      </div>
     </div>
   </div>
+
+  <!-- 스트릭 배너 -->
+  <div id="streak-banner" style="display:none"></div>
 
   <div class="race-wrap">
     <div class="section-hd">
@@ -562,28 +587,137 @@ function render({dateHeaders, jTeam, pTeam}){
   document.getElementById('p-need').textContent=`15승까지 ${TARGET-pWins}승 필요`;
   document.getElementById('days-info').innerHTML=`${played}일 진행<br>${remaining}일 남음`;
 
-  // ── 누적 승수 추이 차트 (사이징 버그 수정) ──
+  // ── 스트릭 배너 ──
+  (function renderStreak(){
+    const banner = document.getElementById('streak-banner');
+    if(!banner || played < 1) return;
+
+    // 연속 streak 계산
+    let streak = 0, streakTeam = null;
+    for(let i = playedDates.length - 1; i >= 0; i--){
+      const w = dayResults[playedDates[i]].winner;
+      if(streakTeam === null) streakTeam = w;
+      if(w === streakTeam) streak++;
+      else break;
+    }
+
+    // 오늘 최고 점수 개인 찾기
+    const latestDate = playedDates[playedDates.length - 1];
+    const latestIdx = _allDateHeaders.indexOf(latestDate);
+    let topScorer = null, topScore = -1;
+    if(latestIdx >= 0){
+      [...jTeam, ...pTeam].forEach(m => {
+        const s = m.scores[latestIdx];
+        if(s !== null && s > topScore){ topScore = s; topScorer = m; }
+      });
+    }
+
+    // 전체 누적 최고 개인
+    let allTopScorer = null, allTopAvg = -1;
+    [...jTeam, ...pTeam].forEach(m => {
+      if(m.avg > allTopAvg){ allTopAvg = m.avg; allTopScorer = m; }
+    });
+
+    // 점수 압도적 차이 (어제 기준)
+    const bigWinDate = [...playedDates].reverse().find(d => Math.abs(dayResults[d].j - dayResults[d].p) >= 3);
+    const bigWinDiff = bigWinDate ? fix2(Math.abs(dayResults[bigWinDate].j - dayResults[bigWinDate].p)) : 0;
+    const bigWinTeam = bigWinDate ? dayResults[bigWinDate].winner : null;
+
+    // 메시지 풀 구성
+    const msgs = [];
+
+    if(streak >= 2){
+      const tc = streakTeam;
+      const streakMsgs = [
+        { icon:'🔥', main:`<em>${streak}연속</em> ${tc==='j'?'J':'P'}팀 우세!`, sub:`${streak}일 연속 팀 평균 리드 중 · 흐름을 잡았다`, cls:tc },
+        { icon:'⚡', main:`${tc==='j'?'J':'P'}팀 <em>${streak}연패 구간</em> 진입!`, sub:`상대팀이 흐름을 잡고 있어요 · 반전이 필요한 시점`, cls:tc },
+        { icon:'🎯', main:`${tc==='j'?'J':'P'}팀, ${streak}일 연속 안정적 우위`, sub:`팀 평균 점수가 꾸준히 앞서는 중`, cls:tc },
+      ];
+      msgs.push(...streakMsgs);
+    }
+
+    if(topScorer && topScore >= 8){
+      const tc = jTeam.find(m=>m.name===topScorer.name) ? 'j' : 'p';
+      msgs.push({ icon:'⭐', main:`${topScorer.name} <em>${topScore}점</em>으로 어제 최고 활약!`, sub:`${shortD(latestDate)} 기준 전체 개인 최고 점수`, cls:tc });
+    }
+
+    if(allTopScorer && allTopAvg > 0){
+      const tc = jTeam.find(m=>m.name===allTopScorer.name) ? 'j' : 'p';
+      msgs.push({ icon:'👑', main:`${allTopScorer.name}, 평균 <em>${allTopAvg}점</em>으로 전체 1위`, sub:`전 기간 통틀어 개인 평균 점수 최상위`, cls:tc });
+    }
+
+    if(bigWinDate && bigWinDiff >= 3){
+      const tc = bigWinTeam;
+      msgs.push({ icon:'💥', main:`${shortD(bigWinDate)} <em>${bigWinDiff}점 차</em> 압도적 승리`, sub:`${tc==='j'?'J':'P'}팀이 해당 날 압도적인 팀 평균 기록`, cls:tc });
+    }
+
+    if(jWins > pWins + 2){
+      msgs.push({ icon:'🚀', main:`J팀 <em>${jWins - pWins}승 격차</em>로 리드 중`, sub:`현재 페이스면 J팀 우위 흐름`, cls:'j' });
+    } else if(pWins > jWins + 2){
+      msgs.push({ icon:'🚀', main:`P팀 <em>${pWins - jWins}승 격차</em>로 리드 중`, sub:`현재 페이스면 P팀 우위 흐름`, cls:'p' });
+    } else if(Math.abs(jWins - pWins) <= 1){
+      msgs.push({ icon:'⚔️', main:`현재 <em>초접전!</em> ${jWins}승 vs ${pWins}승`, sub:`단 한 경기 차이 · 오늘 결과가 분수령`, cls:'j' });
+    }
+
+    if(msgs.length === 0) return;
+
+    // 랜덤 or 가장 최신 streak 우선
+    const chosen = msgs[0];
+
+    // 최근 5일 도트
+    const recentDots = playedDates.slice(-5).map(d => {
+      const w = dayResults[d].winner;
+      const isLast = d === playedDates[playedDates.length-1];
+      return `<div class="s-dot ${isLast && streak >= 2 ? 'fire' : w}">${w==='j'?'J':'P'}</div>`;
+    }).join('');
+
+    banner.className = `streak-banner ${chosen.cls}-streak`;
+    banner.style.display = 'flex';
+    banner.innerHTML = `
+      <div class="streak-icon">${chosen.icon}</div>
+      <div class="streak-body">
+        <div class="streak-main ${chosen.cls}">${chosen.main}</div>
+        <div class="streak-sub">${chosen.sub}</div>
+      </div>
+      <div class="streak-dots">${recentDots}</div>
+    `;
+  })();
+
+  // ── 누적 승수 추이 차트 (전체 날짜 기준) ──
   (function drawChart(){
     const canvas = document.getElementById('raceChart');
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    const labels = [''];
+    // 전체 스케줄 날짜 (대체공휴일 제외) 기준으로 축 구성
+    const HOLIDAYS = ['03월 02일'];
+    const allScheduleDates = WEEK_SCHEDULE.flatMap(w => w.dates).filter(d => !HOLIDAYS.includes(d));
+
+    const labels = ['시작'];
     const jCum = [0], pCum = [0];
+    const isPlayed = []; // 각 포인트가 실제 경기 여부
+    isPlayed.push(false);
     let jAcc=0, pAcc=0;
-    playedDates.forEach(d=>{
-      if(dayResults[d].winner==='j') jAcc++; else pAcc++;
-      labels.push(shortD(d)); jCum.push(jAcc); pCum.push(pAcc);
+    allScheduleDates.forEach(d => {
+      labels.push(shortD(d));
+      if(dayResults[d]){
+        if(dayResults[d].winner==='j') jAcc++; else pAcc++;
+        jCum.push(jAcc); pCum.push(pAcc);
+        isPlayed.push(true);
+      } else {
+        jCum.push(null); pCum.push(null);
+        isPlayed.push(false);
+      }
     });
 
     function draw(){
       const wrap = canvas.parentElement;
       const W = wrap.clientWidth;
       const H = wrap.clientHeight;
-      if(W === 0 || H === 0) { requestAnimationFrame(draw); return; }
+      if(W === 0 || H === 0){ requestAnimationFrame(draw); return; }
       canvas.width = W;
       canvas.height = H;
-      const PAD={top:14,right:48,bottom:32,left:32};
+      const PAD={top:14, right:48, bottom:28, left:32};
       const cW=W-PAD.left-PAD.right, cH=H-PAD.top-PAD.bottom;
       const MAX=TARGET, n=labels.length;
       ctx.clearRect(0,0,W,H);
@@ -597,60 +731,98 @@ function render({dateHeaders, jTeam, pTeam}){
         ctx.font='10px Pretendard,sans-serif';ctx.textAlign='right';
         ctx.fillText(v,PAD.left-5,y+4);
       });
+
       // 목표선
       ctx.strokeStyle='rgba(251,191,36,.5)';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
       ctx.beginPath();ctx.moveTo(PAD.left,PAD.top);ctx.lineTo(PAD.left+cW,PAD.top);ctx.stroke();
       ctx.setLineDash([]);
 
-      if(n<2) return;
-      const xP=i=>PAD.left+(i/(n-1))*cW;
-      const yP=v=>PAD.top+cH-(v/MAX)*cH;
+      // 오늘 이후 미경기 구간 음영
+      const firstNull = jCum.findIndex((v,i)=>i>0&&v===null);
+      if(firstNull > 0){
+        const xStart = PAD.left+(firstNull/(n-1))*cW;
+        ctx.fillStyle='rgba(255,255,255,.018)';
+        ctx.fillRect(xStart, PAD.top, PAD.left+cW-xStart, cH);
+        // "예정" 텍스트
+        ctx.fillStyle='rgba(255,255,255,.1)';
+        ctx.font='10px Pretendard,sans-serif';ctx.textAlign='left';
+        ctx.fillText('← 예정', xStart+6, PAD.top+14);
+      }
+
+      const xP = i => PAD.left+(i/(n-1))*cW;
+      const yP = v => PAD.top+cH-(v/MAX)*cH;
+
+      // 경기 완료 구간만 연결하는 선/면적 그리기
+      function getSegments(data){
+        const segs = []; let seg = [];
+        data.forEach((v,i)=>{
+          if(v !== null){ seg.push({i,v}); }
+          else if(seg.length){ segs.push(seg); seg=[]; }
+        });
+        if(seg.length) segs.push(seg);
+        return segs;
+      }
 
       function drawArea(data,r,g,b){
         const grad=ctx.createLinearGradient(0,PAD.top,0,PAD.top+cH);
-        grad.addColorStop(0,`rgba(${r},${g},${b},.2)`);
+        grad.addColorStop(0,`rgba(${r},${g},${b},.18)`);
         grad.addColorStop(1,`rgba(${r},${g},${b},.01)`);
-        ctx.beginPath();ctx.moveTo(xP(0),yP(data[0]));
-        data.forEach((v,i)=>{if(i>0)ctx.lineTo(xP(i),yP(v));});
-        ctx.lineTo(xP(n-1),PAD.top+cH);ctx.lineTo(xP(0),PAD.top+cH);
-        ctx.closePath();ctx.fillStyle=grad;ctx.fill();
-      }
-      function drawLine(data,color){
-        ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';
-        ctx.beginPath();
-        data.forEach((v,i)=>i===0?ctx.moveTo(xP(i),yP(v)):ctx.lineTo(xP(i),yP(v)));
-        ctx.stroke();
-      }
-      function drawDots(data,color){
-        data.forEach((v,i)=>{
-          if(i===0)return;
-          ctx.beginPath();ctx.arc(xP(i),yP(v),4,0,Math.PI*2);
-          ctx.fillStyle=color;ctx.fill();
-          ctx.strokeStyle='rgba(9,9,15,.9)';ctx.lineWidth=2;ctx.stroke();
+        const segs = getSegments(data);
+        segs.forEach(seg=>{
+          if(seg.length < 2) return;
+          ctx.beginPath();
+          ctx.moveTo(xP(seg[0].i),yP(seg[0].v));
+          seg.forEach(p=>ctx.lineTo(xP(p.i),yP(p.v)));
+          ctx.lineTo(xP(seg[seg.length-1].i),PAD.top+cH);
+          ctx.lineTo(xP(seg[0].i),PAD.top+cH);
+          ctx.closePath();ctx.fillStyle=grad;ctx.fill();
         });
       }
-      function drawEndLabel(data,color,offset){
-        const last=data[n-1]; if(last===undefined)return;
-        const x=xP(n-1),y=yP(last);
+
+      function drawLine(data,color){
+        const segs = getSegments(data);
+        ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';
+        segs.forEach(seg=>{
+          if(seg.length < 1) return;
+          ctx.beginPath();
+          seg.forEach((p,i)=>i===0?ctx.moveTo(xP(p.i),yP(p.v)):ctx.lineTo(xP(p.i),yP(p.v)));
+          ctx.stroke();
+        });
+      }
+
+      function drawDots(data,color){
+        getSegments(data).flat().forEach(p=>{
+          if(p.i===0) return;
+          ctx.beginPath();ctx.arc(xP(p.i),yP(p.v),3.5,0,Math.PI*2);
+          ctx.fillStyle=color;ctx.fill();
+          ctx.strokeStyle='rgba(9,9,15,.9)';ctx.lineWidth=1.5;ctx.stroke();
+        });
+      }
+
+      function drawEndLabel(data,color,alignRight){
+        const lastSeg = getSegments(data);
+        if(!lastSeg.length) return;
+        const last = lastSeg[lastSeg.length-1].slice(-1)[0];
+        if(!last) return;
         ctx.fillStyle=color;ctx.font='bold 11px Pretendard,sans-serif';
-        ctx.textAlign='left';ctx.fillText(last+'승',x+8,y+offset);
+        ctx.textAlign=alignRight?'right':'left';
+        ctx.fillText(last.v+'승', xP(last.i)+(alignRight?-8:8), yP(last.v)-6);
       }
 
       drawArea(jCum,91,156,246);drawArea(pCum,251,146,60);
       drawLine(jCum,'#5b9cf6');drawLine(pCum,'#fb923c');
       drawDots(jCum,'#5b9cf6');drawDots(pCum,'#fb923c');
-      drawEndLabel(jCum,'#5b9cf6',4);drawEndLabel(pCum,'#fb923c',14);
+      drawEndLabel(jCum,'#5b9cf6',false);drawEndLabel(pCum,'#fb923c',false);
 
-      // X 라벨
+      // X 라벨: 주차 시작일만
+      const weekStarts = new Set(WEEK_SCHEDULE.map(w=>w.dates[0]).filter(d=>!HOLIDAYS.includes(d)).map(d=>shortD(d)));
+      weekStarts.add(shortD(allScheduleDates[allScheduleDates.length-1]));
       ctx.fillStyle='rgba(255,255,255,.28)';
       ctx.font='10px Pretendard,sans-serif';ctx.textAlign='center';
-      const step=n<=6?1:Math.ceil(n/6);
       labels.forEach((l,i)=>{
-        if(!l)return;
-        if((i-1)%step===0||i===n-1) ctx.fillText(l,xP(i),H-6);
+        if(weekStarts.has(l)) ctx.fillText(l,xP(i),H-4);
       });
     }
-    // 레이아웃 완료 후 draw
     requestAnimationFrame(()=>{ requestAnimationFrame(draw); });
     window.addEventListener('resize', draw);
   })();
