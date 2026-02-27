@@ -103,8 +103,15 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .wws-p{background:var(--ps);color:var(--p);border:1px solid rgba(251,146,60,.3);}
 .wws-tie{background:rgba(255,255,255,.05);color:var(--muted);}
 .week-days{display:grid;gap:8px;}
-.day-card{background:var(--bg3);border-radius:12px;padding:12px 10px 10px;border:1px solid var(--bd);text-align:center;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden;}
-.day-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3);}
+.day-card{background:var(--bg3);border-radius:12px;padding:12px 10px 10px;border:1px solid var(--bd);text-align:center;transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden;cursor:default;}
+.day-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.day-card:hover .day-detail{opacity:1;}
+.day-detail{position:absolute;inset:0;border-radius:12px;background:rgba(9,9,15,.88);backdrop-filter:blur(2px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity .2s;padding:6px;pointer-events:none;}
+.dd-title{font-size:8px;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;}
+.dd-score-row{display:flex;align-items:center;gap:5px;font-size:11px;}
+.dd-team{font-size:9px;font-weight:800;width:14px;}
+.dd-val{font-size:12px;font-weight:900;}
+.dd-diff{font-size:13px;font-weight:900;margin-top:3px;}
 .day-card.j-win{border-color:rgba(91,156,246,.35);background:linear-gradient(160deg,rgba(91,156,246,.08),var(--bg3));}
 .day-card.p-win{border-color:rgba(251,146,60,.35);background:linear-gradient(160deg,rgba(251,146,60,.08),var(--bg3));}
 .day-card.upcoming{opacity:.38;}
@@ -780,8 +787,19 @@ function render({dateHeaders, jTeam, pTeam}){
         card.className='day-card holiday';
         card.innerHTML=`<div class="day-date">${shortD(d)}</div><div class="day-scores"><span style="color:var(--muted);font-size:16px;font-weight:300">—</span></div><div class="day-badge tbd">대체공휴일</div>`;
       } else if(res){
+        const diff = fix2(Math.abs(res.j - res.p));
+        const winColor = res.winner==='j' ? 'var(--j)' : 'var(--p)';
         card.className=`day-card ${res.winner}-win${isT?' today-card':''}`;
-        card.innerHTML=`${isT?'<div class="today-line"></div>':''}<div class="day-date">${shortD(d)}${isT?' 🔴':''}</div><div class="day-scores"><span class="day-sc j">${res.j}</span><span class="day-sep">:</span><span class="day-sc p">${res.p}</span></div><div class="day-badge ${res.winner}">${res.winner==='j'?'J팀 승':'P팀 승'}</div>`;
+        card.innerHTML=`${isT?'<div class="today-line"></div>':''}
+          <div class="day-date">${shortD(d)}${isT?' 🔴':''}</div>
+          <div class="day-scores"><span class="day-sc j">${res.j}</span><span class="day-sep">:</span><span class="day-sc p">${res.p}</span></div>
+          <div class="day-badge ${res.winner}">${res.winner==='j'?'J팀 승':'P팀 승'}</div>
+          <div class="day-detail">
+            <div class="dd-title">SCORE</div>
+            <div class="dd-score-row"><span class="dd-team" style="color:var(--j)">J</span><span class="dd-val" style="color:var(--j)">${res.j}</span></div>
+            <div class="dd-score-row"><span class="dd-team" style="color:var(--p)">P</span><span class="dd-val" style="color:var(--p)">${res.p}</span></div>
+            <div class="dd-diff" style="color:${winColor}">+${diff} 차</div>
+          </div>`;
       } else {
         card.className='day-card upcoming';
         card.innerHTML=`<div class="day-date">${shortD(d)}</div><div class="day-scores"><span style="color:var(--muted);font-size:16px;font-weight:300">—</span></div><div class="day-badge tbd">예정</div>`;
