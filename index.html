@@ -59,7 +59,41 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .legend-dot.j{background:var(--j);}
 .legend-dot.p{background:var(--p);}
 .legend-line-gold{width:14px;height:0;border-top:2px dashed var(--gold);}
-#raceChart{width:100%;display:block;border-radius:8px;}
+.chart-canvas-wrap{position:relative;width:100%;height:200px;margin-bottom:12px;}
+#raceChart{position:absolute;inset:0;width:100%!important;height:100%!important;}
+/* mini race bar */
+.mini-race-outer{position:relative;height:36px;background:var(--bg3);border-radius:10px;overflow:hidden;border:1px solid var(--bd);margin-bottom:6px;}
+.mini-race-outer::after{content:'🏁';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:14px;opacity:.5;pointer-events:none;}
+.mini-finish{position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:.7;transform:translateX(-50%);}
+.mini-j-track{position:absolute;left:0;top:0;bottom:0;right:50%;overflow:hidden;}
+.mini-j-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--j2),var(--j));border-radius:0 4px 4px 0;transition:width 1.4s cubic-bezier(.34,1.2,.64,1);}
+.mini-j-car{position:absolute;top:50%;transform:translateY(-50%);font-size:16px;transition:left 1.4s cubic-bezier(.34,1.2,.64,1);filter:drop-shadow(0 0 4px rgba(91,156,246,.8));animation:carBob .6s ease-in-out infinite;z-index:10;}
+.mini-p-track{position:absolute;right:0;top:0;bottom:0;left:50%;overflow:hidden;}
+.mini-p-fill{position:absolute;right:0;top:0;bottom:0;background:linear-gradient(270deg,var(--p2),var(--p));border-radius:4px 0 0 4px;transition:width 1.4s cubic-bezier(.34,1.2,.64,1);}
+.mini-p-car{position:absolute;top:50%;font-size:16px;transition:right 1.4s cubic-bezier(.34,1.2,.64,1);filter:drop-shadow(0 0 4px rgba(251,146,60,.8));animation:carBobR .7s ease-in-out infinite;animation-delay:.15s;z-index:10;}
+.mini-race-score-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;}
+.rs-j{color:var(--j);}
+.rs-p{color:var(--p);}
+.rs-mid{color:var(--muted);font-size:10px;}
+@keyframes carBob{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 2px))}}
+@keyframes carBobR{0%,100%{transform:translateY(-50%) scaleX(-1)}50%{transform:translateY(calc(-50% - 2px)) scaleX(-1)}}
+/* 예측 카드 */
+.forecast-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:20px 24px;margin-bottom:20px;animation:fadeUp .55s .2s ease both;}
+.forecast-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;}
+.fc-card{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;}
+.fc-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.fc-value{font-size:20px;font-weight:900;letter-spacing:-.5px;}
+.fc-value.j{color:var(--j);}
+.fc-value.p{color:var(--p);}
+.fc-value.gold{color:var(--gold);}
+.fc-value.win{color:var(--win);}
+.fc-sub{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.fc-bar{height:3px;background:rgba(255,255,255,.06);border-radius:99px;margin-top:10px;overflow:hidden;}
+.fc-bar-fill{height:100%;border-radius:99px;}
+.fc-bar-fill.j{background:linear-gradient(90deg,var(--j2),var(--j));}
+.fc-bar-fill.p{background:linear-gradient(90deg,var(--p2),var(--p));}
+.forecast-note{font-size:10px;color:var(--muted);margin-top:10px;line-height:1.7;padding:8px 12px;background:rgba(255,255,255,.025);border-radius:8px;border-left:2px solid rgba(91,156,246,.3);}
+@media(max-width:720px){.forecast-grid{grid-template-columns:repeat(2,1fr);}}
 .weekly-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:22px 24px;margin-bottom:20px;animation:fadeUp .55s .23s ease both;}
 .week-block{margin-bottom:18px;}
 .week-block:last-child{margin-bottom:0;}
@@ -256,7 +290,30 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
         <div class="legend-item"><div class="legend-line-gold"></div> 목표 15승</div>
       </div>
     </div>
-    <canvas id="raceChart" height="220"></canvas>
+    <div class="chart-canvas-wrap"><canvas id="raceChart"></canvas></div>
+    <!-- 미니 레이싱바 -->
+    <div class="mini-race-outer">
+      <div class="mini-finish"></div>
+      <div class="mini-j-track"><div class="mini-j-fill" id="mini-j-fill" style="width:0%"></div></div>
+      <div class="mini-j-car" id="mini-j-car" style="left:4px">🚙</div>
+      <div class="mini-p-track"><div class="mini-p-fill" id="mini-p-fill" style="width:0%"></div></div>
+      <div class="mini-p-car" id="mini-p-car" style="right:4px">🚕</div>
+    </div>
+    <div class="mini-race-score-row">
+      <span class="rs-j" id="race-j-label"></span>
+      <span class="rs-mid">🏁 15승 결승선</span>
+      <span class="rs-p" id="race-p-label"></span>
+    </div>
+  </div>
+
+  <!-- 예측 분석 -->
+  <div class="forecast-wrap">
+    <div class="section-hd">
+      <div class="section-title"><span style="font-size:15px">🔮</span> 예측 분석</div>
+      <div class="section-meta" id="forecast-meta"></div>
+    </div>
+    <div class="forecast-grid" id="forecast-grid"></div>
+    <div class="forecast-note" id="forecast-note"></div>
   </div>
 
   <div class="weekly-wrap">
@@ -498,128 +555,209 @@ function render({dateHeaders, jTeam, pTeam}){
   document.getElementById('p-need').textContent=`15승까지 ${TARGET-pWins}승 필요`;
   document.getElementById('days-info').innerHTML=`${played}일 진행<br>${remaining}일 남음`;
 
-  // Cumulative Wins Chart
+  // ── 누적 승수 추이 차트 (사이징 버그 수정) ──
   (function drawChart(){
     const canvas = document.getElementById('raceChart');
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    // 누적 승수 데이터 계산
-    const labels = [];
-    const jCum = [];
-    const pCum = [];
-    let jAcc = 0, pAcc = 0;
-    // 시작점 (0,0)
-    labels.push('');
-    jCum.push(0);
-    pCum.push(0);
-    playedDates.forEach(d => {
-      if(dayResults[d].winner === 'j') jAcc++; else pAcc++;
-      labels.push(shortD(d));
-      jCum.push(jAcc);
-      pCum.push(pAcc);
+    const labels = [''];
+    const jCum = [0], pCum = [0];
+    let jAcc=0, pAcc=0;
+    playedDates.forEach(d=>{
+      if(dayResults[d].winner==='j') jAcc++; else pAcc++;
+      labels.push(shortD(d)); jCum.push(jAcc); pCum.push(pAcc);
     });
 
     function draw(){
-      const W = canvas.parentElement.offsetWidth - 52;
-      const H = 220;
+      const wrap = canvas.parentElement;
+      const W = wrap.clientWidth;
+      const H = wrap.clientHeight;
+      if(W === 0 || H === 0) { requestAnimationFrame(draw); return; }
       canvas.width = W;
       canvas.height = H;
-      const PAD = {top:16, right:24, bottom:36, left:36};
-      const cW = W - PAD.left - PAD.right;
-      const cH = H - PAD.top - PAD.bottom;
-      const MAX = TARGET;
-      const n = labels.length;
+      const PAD={top:14,right:48,bottom:32,left:32};
+      const cW=W-PAD.left-PAD.right, cH=H-PAD.top-PAD.bottom;
+      const MAX=TARGET, n=labels.length;
       ctx.clearRect(0,0,W,H);
 
       // 그리드
-      ctx.strokeStyle='rgba(255,255,255,.05)';
-      ctx.lineWidth=1;
       [0,5,10,15].forEach(v=>{
         const y=PAD.top+cH-(v/MAX)*cH;
+        ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;
         ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(PAD.left+cW,y);ctx.stroke();
-        ctx.fillStyle='rgba(255,255,255,.22)';
-        ctx.font='10px Pretendard,sans-serif';
-        ctx.textAlign='right';
-        ctx.fillText(v,PAD.left-6,y+4);
+        ctx.fillStyle='rgba(255,255,255,.25)';
+        ctx.font='10px Pretendard,sans-serif';ctx.textAlign='right';
+        ctx.fillText(v,PAD.left-5,y+4);
       });
-
       // 목표선
-      const tY=PAD.top;
-      ctx.strokeStyle='rgba(251,191,36,.45)';
-      ctx.lineWidth=1.5;
-      ctx.setLineDash([6,4]);
-      ctx.beginPath();ctx.moveTo(PAD.left,tY);ctx.lineTo(PAD.left+cW,tY);ctx.stroke();
+      ctx.strokeStyle='rgba(251,191,36,.5)';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(PAD.left,PAD.top);ctx.lineTo(PAD.left+cW,PAD.top);ctx.stroke();
       ctx.setLineDash([]);
 
-      if(n < 2){ return; }
-
+      if(n<2) return;
       const xP=i=>PAD.left+(i/(n-1))*cW;
       const yP=v=>PAD.top+cH-(v/MAX)*cH;
 
-      // 면적 그라디언트
-      function drawArea(data, r, g, b){
+      function drawArea(data,r,g,b){
         const grad=ctx.createLinearGradient(0,PAD.top,0,PAD.top+cH);
-        grad.addColorStop(0,`rgba(${r},${g},${b},.22)`);
+        grad.addColorStop(0,`rgba(${r},${g},${b},.2)`);
         grad.addColorStop(1,`rgba(${r},${g},${b},.01)`);
-        ctx.beginPath();
-        ctx.moveTo(xP(0),yP(data[0]));
+        ctx.beginPath();ctx.moveTo(xP(0),yP(data[0]));
         data.forEach((v,i)=>{if(i>0)ctx.lineTo(xP(i),yP(v));});
-        ctx.lineTo(xP(n-1),PAD.top+cH);
-        ctx.lineTo(xP(0),PAD.top+cH);
-        ctx.closePath();
-        ctx.fillStyle=grad;ctx.fill();
+        ctx.lineTo(xP(n-1),PAD.top+cH);ctx.lineTo(xP(0),PAD.top+cH);
+        ctx.closePath();ctx.fillStyle=grad;ctx.fill();
       }
-
-      // 선
-      function drawLine(data, color){
+      function drawLine(data,color){
         ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';
         ctx.beginPath();
         data.forEach((v,i)=>i===0?ctx.moveTo(xP(i),yP(v)):ctx.lineTo(xP(i),yP(v)));
         ctx.stroke();
       }
-
-      // 점
-      function drawDots(data, color){
+      function drawDots(data,color){
         data.forEach((v,i)=>{
-          if(i===0) return;
+          if(i===0)return;
           ctx.beginPath();ctx.arc(xP(i),yP(v),4,0,Math.PI*2);
           ctx.fillStyle=color;ctx.fill();
-          ctx.strokeStyle='rgba(9,9,15,.85)';ctx.lineWidth=2;ctx.stroke();
+          ctx.strokeStyle='rgba(9,9,15,.9)';ctx.lineWidth=2;ctx.stroke();
         });
       }
-
-      // 마지막 점 값 라벨
-      function drawLastLabel(data, color){
-        const last=data[n-1];
-        if(last===undefined) return;
-        const x=xP(n-1), y=yP(last);
-        ctx.fillStyle=color;ctx.font='bold 11px Pretendard,sans-serif';ctx.textAlign='left';
-        ctx.fillText(last+'승', x+8, y+4);
+      function drawEndLabel(data,color,offset){
+        const last=data[n-1]; if(last===undefined)return;
+        const x=xP(n-1),y=yP(last);
+        ctx.fillStyle=color;ctx.font='bold 11px Pretendard,sans-serif';
+        ctx.textAlign='left';ctx.fillText(last+'승',x+8,y+offset);
       }
 
-      drawArea(jCum,91,156,246);
-      drawArea(pCum,251,146,60);
-      drawLine(jCum,'#5b9cf6');
-      drawLine(pCum,'#fb923c');
-      drawDots(jCum,'#5b9cf6');
-      drawDots(pCum,'#fb923c');
-      drawLastLabel(jCum,'#5b9cf6');
-      drawLastLabel(pCum,'#fb923c');
+      drawArea(jCum,91,156,246);drawArea(pCum,251,146,60);
+      drawLine(jCum,'#5b9cf6');drawLine(pCum,'#fb923c');
+      drawDots(jCum,'#5b9cf6');drawDots(pCum,'#fb923c');
+      drawEndLabel(jCum,'#5b9cf6',4);drawEndLabel(pCum,'#fb923c',14);
 
-      // X축 라벨 (첫번째 빈 라벨 제외)
-      ctx.fillStyle='rgba(255,255,255,.3)';
-      ctx.font='10px Pretendard,sans-serif';
-      ctx.textAlign='center';
+      // X 라벨
+      ctx.fillStyle='rgba(255,255,255,.28)';
+      ctx.font='10px Pretendard,sans-serif';ctx.textAlign='center';
+      const step=n<=6?1:Math.ceil(n/6);
       labels.forEach((l,i)=>{
-        if(!l) return;
-        const step = n <= 6 ? 1 : Math.ceil(n/6);
-        if((i-1)%step===0 || i===n-1) ctx.fillText(l,xP(i),H-8);
+        if(!l)return;
+        if((i-1)%step===0||i===n-1) ctx.fillText(l,xP(i),H-6);
       });
     }
-
-    draw();
+    // 레이아웃 완료 후 draw
+    requestAnimationFrame(()=>{ requestAnimationFrame(draw); });
     window.addEventListener('resize', draw);
+  })();
+
+  // ── 미니 레이싱바 ──
+  document.getElementById('race-j-label').textContent=`← J팀 ${jWins}승`;
+  document.getElementById('race-p-label').textContent=`P팀 ${pWins}승 →`;
+  setTimeout(()=>{
+    const jP=Math.min((jWins/TARGET)*100,100), pP=Math.min((pWins/TARGET)*100,100);
+    document.getElementById('mini-j-fill').style.width=jP+'%';
+    document.getElementById('mini-p-fill').style.width=pP+'%';
+    const jTW=document.querySelector('.mini-j-track').offsetWidth;
+    const pTW=document.querySelector('.mini-p-track').offsetWidth;
+    document.getElementById('mini-j-car').style.left=Math.max(4,4+(jP/100)*(jTW-32))+'px';
+    document.getElementById('mini-p-car').style.right=Math.max(4,4+(pP/100)*(pTW-32))+'px';
+  },400);
+
+  // ── 고도화 예측 분석 ──
+  (function renderForecast(){
+    const fGrid=document.getElementById('forecast-grid');
+    const fNote=document.getElementById('forecast-note');
+    const fMeta=document.getElementById('forecast-meta');
+    if(!fGrid) return;
+
+    if(played < 2){
+      fGrid.innerHTML='';
+      fNote.textContent='진행 데이터가 부족합니다. 2일 이상 경과 후 예측이 표시됩니다.';
+      return;
+    }
+
+    // ① 기본 승률
+    const jRate = jWins/played;
+    const pRate = pWins/played;
+
+    // ② 최근 3경기 가중 승률 (최근일수록 2배 가중)
+    const recent = playedDates.slice(-Math.min(3,played));
+    let jRecW=0, pRecW=0, wSum=0;
+    recent.forEach((d,i)=>{
+      const w=i+1; wSum+=w;
+      if(dayResults[d].winner==='j') jRecW+=w; else pRecW+=w;
+    });
+    const jRecentRate = jRecW/wSum;
+    const pRecentRate = pRecW/wSum;
+
+    // ③ 점수 트렌드 (최근 3일 평균 vs 전체 평균)
+    const jAllScores = playedDates.map(d=>dayResults[d].j);
+    const pAllScores = playedDates.map(d=>dayResults[d].p);
+    const jRecentScores = jAllScores.slice(-3);
+    const pRecentScores = pAllScores.slice(-3);
+    const jScoreTrend = (jRecentScores.reduce((a,b)=>a+b,0)/jRecentScores.length) - (jAllScores.reduce((a,b)=>a+b,0)/jAllScores.length);
+    const pScoreTrend = (pRecentScores.reduce((a,b)=>a+b,0)/pRecentScores.length) - (pAllScores.reduce((a,b)=>a+b,0)/pAllScores.length);
+
+    // ④ 종합 예측 승률: 전체 50% + 최근 50% + 트렌드 보정
+    let jPred = jRate*0.5 + jRecentRate*0.5;
+    let pPred = pRate*0.5 + pRecentRate*0.5;
+    // 트렌드 보정: 점수 차이 기준 ±5% 이내
+    const trendBonus = Math.min(0.05, Math.abs(jScoreTrend - pScoreTrend)/20);
+    if(jScoreTrend > pScoreTrend) jPred = Math.min(0.95, jPred+trendBonus);
+    else pPred = Math.min(0.95, pPred+trendBonus);
+    // 합계 1로 정규화
+    const total = jPred+pPred;
+    jPred /= total; pPred /= total;
+
+    // ⑤ 예상 종료일 계산: 각팀 남은 승수 / 예측 승률 → 필요 남은 경기수
+    const HOLIDAYS = ['03월 02일']; // 대체공휴일
+    const allFutureDates = WEEK_SCHEDULE.flatMap(w=>w.dates).filter(d=>!dayResults[d]&&!HOLIDAYS.includes(d));
+    const jNeed = TARGET - jWins;
+    const pNeed = TARGET - pWins;
+    // 각팀이 남은 경기에서 필요 승수 달성하는 시뮬: E[경기수] = need/rate
+    const jDaysNeeded = Math.ceil(jNeed / jPred);
+    const pDaysNeeded = Math.ceil(pNeed / pPred);
+    const winnerDays = Math.min(jDaysNeeded, pDaysNeeded);
+    const predictedEndDate = allFutureDates[Math.min(winnerDays-1, allFutureDates.length-1)];
+    const predictedWinner = jDaysNeeded <= pDaysNeeded ? 'J' : 'P';
+    const predictedEndStr = predictedEndDate ? shortD(predictedEndDate) : '기간 내';
+
+    // ⑥ 점수 변동성 (표준편차 기반 불확실성)
+    const jStd = Math.sqrt(jAllScores.reduce((a,v)=>a+Math.pow(v-(jAllScores.reduce((s,x)=>s+x,0)/jAllScores.length),2),0)/jAllScores.length);
+    const pStd = Math.sqrt(pAllScores.reduce((a,v)=>a+Math.pow(v-(pAllScores.reduce((s,x)=>s+x,0)/pAllScores.length),2),0)/pAllScores.length);
+    const uncertainty = ((jStd+pStd)/2) > 2 ? '높음' : ((jStd+pStd)/2) > 1 ? '보통' : '낮음';
+
+    fMeta.textContent=`${played}일 데이터 기반`;
+
+    fGrid.innerHTML=`
+      <div class="fc-card">
+        <div class="fc-label">J팀 종합 예측 승률</div>
+        <div class="fc-value j">${Math.round(jPred*100)}%</div>
+        <div class="fc-sub">전체 ${Math.round(jRate*100)}% · 최근 ${Math.round(jRecentRate*100)}%<br>점수 트렌드 ${jScoreTrend>=0?'▲':'▼'}${Math.abs(jScoreTrend).toFixed(2)}</div>
+        <div class="fc-bar"><div class="fc-bar-fill j" style="width:${Math.round(jPred*100)}%"></div></div>
+      </div>
+      <div class="fc-card">
+        <div class="fc-label">P팀 종합 예측 승률</div>
+        <div class="fc-value p">${Math.round(pPred*100)}%</div>
+        <div class="fc-sub">전체 ${Math.round(pRate*100)}% · 최근 ${Math.round(pRecentRate*100)}%<br>점수 트렌드 ${pScoreTrend>=0?'▲':'▼'}${Math.abs(pScoreTrend).toFixed(2)}</div>
+        <div class="fc-bar"><div class="fc-bar-fill p" style="width:${Math.round(pPred*100)}%"></div></div>
+      </div>
+      <div class="fc-card">
+        <div class="fc-label">예상 종료일</div>
+        <div class="fc-value gold">${predictedEndStr}</div>
+        <div class="fc-sub">${predictedWinner}팀 먼저 15승 예상<br>남은 경기 ${allFutureDates.length}일</div>
+      </div>
+      <div class="fc-card">
+        <div class="fc-label">예측 불확실성</div>
+        <div class="fc-value ${uncertainty==='낮음'?'win':'gold'}">${uncertainty}</div>
+        <div class="fc-sub">점수 변동폭 기준<br>J±${jStd.toFixed(1)} / P±${pStd.toFixed(1)}</div>
+      </div>
+    `;
+
+    const trendDesc = jScoreTrend > pScoreTrend
+      ? `J팀이 최근 상승세(+${jScoreTrend.toFixed(2)})이며 P팀 대비 좋은 흐름`
+      : pScoreTrend > jScoreTrend
+      ? `P팀이 최근 상승세(+${pScoreTrend.toFixed(2)})이며 J팀 대비 좋은 흐름`
+      : '양팀 트렌드 비슷';
+    fNote.innerHTML=`📊 계산 기준: 전체 승률 50% + 최근 3경기 가중 승률 50% + 점수 트렌드 보정 · ${trendDesc} · 변동성이 ${uncertainty}아 예측 신뢰도는 <b>${uncertainty==='낮음'?'양호':'보통'}</b>`;
   })();
 
   // Weekly
