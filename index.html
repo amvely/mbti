@@ -82,6 +82,7 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .day-card.j-win{border-color:rgba(91,156,246,.35);background:linear-gradient(160deg,rgba(91,156,246,.08),var(--bg3));}
 .day-card.p-win{border-color:rgba(251,146,60,.35);background:linear-gradient(160deg,rgba(251,146,60,.08),var(--bg3));}
 .day-card.upcoming{opacity:.38;}
+.day-card.holiday{opacity:.38;}
 .day-card.today-card{border-color:var(--gold)!important;opacity:1;}
 .day-date{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;}
 .day-scores{display:flex;justify-content:center;align-items:center;gap:7px;margin-bottom:7px;}
@@ -539,7 +540,11 @@ function render({dateHeaders, jTeam, pTeam}){
     dDiv.style.gridTemplateColumns=`repeat(${wk.dates.length},1fr)`;
     wk.dates.forEach(d=>{
       const res=dayResults[d], isT=d===todayLabel, card=document.createElement('div');
-      if(res){
+      const isHoliday = d==='03월 02일';
+      if(isHoliday){
+        card.className='day-card holiday';
+        card.innerHTML=`<div class="day-date">${shortD(d)}</div><div class="day-scores"><span style="color:var(--muted);font-size:16px;font-weight:300">—</span></div><div class="day-badge tbd">대체공휴일</div>`;
+      } else if(res){
         card.className=`day-card ${res.winner}-win${isT?' today-card':''}`;
         card.innerHTML=`${isT?'<div class="today-line"></div>':''}<div class="day-date">${shortD(d)}${isT?' 🔴':''}</div><div class="day-scores"><span class="day-sc j">${res.j}</span><span class="day-sep">:</span><span class="day-sc p">${res.p}</span></div><div class="day-badge ${res.winner}">${res.winner==='j'?'J팀 승':'P팀 승'}</div>`;
       } else {
@@ -550,7 +555,7 @@ function render({dateHeaders, jTeam, pTeam}){
     });
     block.appendChild(dDiv); wCont.appendChild(block);
   });
-  document.getElementById('week-meta').textContent=`총 ${TOTAL_WD}평일 · J ${totalJ}승 · P ${totalP}승`;
+ 
 
   // Stakes
   const jLeading=jWins>=pWins;
