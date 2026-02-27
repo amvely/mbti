@@ -33,10 +33,17 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 /* ── score-hero 새 레이아웃 ── */
 .score-hero{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin-bottom:12px;animation:fadeUp .55s .1s ease both;}
 .score-hero-top{display:grid;grid-template-columns:1fr auto 1fr;}
-.score-side{padding:22px 28px;display:flex;align-items:center;justify-content:center;gap:18px;position:relative;}
+/* J팀: [메타 우정렬] [승수 중앙] | P팀: [승수 중앙] [메타 좌정렬] */
+.score-side{padding:22px 28px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:0;position:relative;}
 .score-side.j{background:linear-gradient(140deg,rgba(91,156,246,.13) 0%,transparent 70%);}
 .score-side.p{background:linear-gradient(220deg,rgba(251,146,60,.13) 0%,transparent 70%);}
-/* 승수 숫자 - 테두리 제거, 섹션 중앙 배치 */
+/* J팀: 메타(col1 우정렬) → 승수(col2 center) → 빈칸(col3) */
+.score-side.j .s-meta{grid-column:1;display:flex;flex-direction:column;gap:6px;align-items:flex-end;text-align:right;}
+.score-side.j .s-wins-wrap{grid-column:2;margin-left:18px;}
+/* P팀: 빈칸(col1) → 승수(col2 center) → 메타(col3 좌정렬) */
+.score-side.p .s-wins-wrap{grid-column:2;margin-right:18px;}
+.score-side.p .s-meta{grid-column:3;display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;}
+/* 승수 wrap */
 .s-wins-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .s-wins{font-size:64px;font-weight:900;line-height:1;letter-spacing:-2px;}
 .score-side.j .s-wins{color:var(--j);text-shadow:0 0 32px var(--jg);}
@@ -733,12 +740,12 @@ function render({dateHeaders, jTeam, pTeam}){
     mvpBanner.className = `streak-banner mvp-banner`;
     mvpBanner.style.display = 'flex';
     mvpBanner.innerHTML = `
-      <div class="streak-icon" style="animation:none;font-size:26px;">🏅</div>
       <div class="streak-body">
         <div class="streak-main gold">⭐ MVP · ${mvpMember.name}</div>
         <div class="streak-sub">${shortD(latestDate)} ${winTeamLabel}팀 승리 최다 기여 · ${mvpScore}점</div>
         <div><span class="mvp-badge">✨ ${winTeamLabel}팀 기여도 1위</span></div>
       </div>
+      <div class="streak-icon" style="font-size:26px;flex-shrink:0;">🏅</div>
     `;
   })();
 
