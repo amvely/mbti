@@ -33,26 +33,26 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 /* ── score-hero 새 레이아웃 ── */
 .score-hero{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin-bottom:12px;animation:fadeUp .55s .1s ease both;}
 .score-hero-top{display:grid;grid-template-columns:1fr auto 1fr;}
-/* 승수 중앙 상단, 팀명+칩은 승수 아래 J우측/P좌측 */
-.score-side{padding:24px 28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;}
-.score-side.j{background:linear-gradient(140deg,rgba(91,156,246,.13) 0%,transparent 70%);}
-.score-side.p{background:linear-gradient(220deg,rgba(251,146,60,.13) 0%,transparent 70%);}
-/* 승수 wrap - 중앙 */
-.s-wins-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+/* score-side: 가로로 꽉 채워서 승수 중앙, 메타 VS쪽 끝에 */
+.score-side{padding:22px 24px;display:flex;align-items:center;position:relative;min-height:110px;}
+.score-side.j{background:linear-gradient(140deg,rgba(91,156,246,.13) 0%,transparent 70%);justify-content:space-between;}
+.score-side.p{background:linear-gradient(220deg,rgba(251,146,60,.13) 0%,transparent 70%);justify-content:space-between;flex-direction:row-reverse;}
+/* 승수 - 절대위치로 섹션 정중앙 */
+.s-wins-wrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
 .s-wins{font-size:64px;font-weight:900;line-height:1;letter-spacing:-2px;}
 .score-side.j .s-wins{color:var(--j);text-shadow:0 0 32px var(--jg);}
 .score-side.p .s-wins{color:var(--p);text-shadow:0 0 32px var(--pg);}
-.s-unit{font-size:16px;font-weight:700;opacity:.65;margin-top:3px;}
+.s-unit{font-size:16px;font-weight:700;opacity:.65;margin-top:3px;text-align:center;}
 .score-side.j .s-unit{color:var(--j);}
 .score-side.p .s-unit{color:var(--p);}
-/* 메타 - J팀은 우정렬, P팀은 좌정렬 */
-.s-meta{display:flex;flex-direction:column;gap:5px;width:100%;}
-.score-side.j .s-meta{align-items:flex-end;text-align:right;}
-.score-side.p .s-meta{align-items:flex-start;text-align:left;}
+/* 메타 - VS 구분선 바로 옆(J: 우측끝, P: 좌측끝) */
+.s-meta{display:flex;flex-direction:column;gap:5px;}
+.score-side.j .s-meta{align-items:flex-end;text-align:right;order:2;}/* J팀: 우측에 */
+.score-side.p .s-meta{align-items:flex-start;text-align:left;order:2;}/* P팀: 좌측에(row-reverse라 실제 우측) */
 .s-name{font-size:18px;font-weight:900;letter-spacing:-.5px;}
 .score-side.j .s-name{color:var(--j);}
 .score-side.p .s-name{color:var(--p);}
-/* s-need: J팀은 파란색, P팀은 주황색 */
+/* s-need 칩 */
 .s-need{font-size:11px;font-weight:700;border-radius:99px;padding:2px 10px;display:inline-block;}
 .score-side.j .s-need{color:var(--j);background:rgba(91,156,246,.12);border:1px solid rgba(91,156,246,.3);}
 .score-side.p .s-need{color:var(--p);background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.3);}
@@ -78,28 +78,28 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 /* 스트릭 배너 */
 .banners-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
 @media(max-width:640px){.banners-row{grid-template-columns:1fr;}}
-.streak-banner{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;animation:fadeUp .55s .12s ease both;}
+.streak-banner{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;animation:fadeUp .55s .12s ease both;}
 .streak-banner::before{content:'';position:absolute;inset:0;pointer-events:none;}
 .streak-banner.j-streak::before{background:linear-gradient(90deg,rgba(91,156,246,.09),transparent 60%);}
 .streak-banner.p-streak::before{background:linear-gradient(90deg,rgba(251,146,60,.09),transparent 60%);}
 .streak-banner.mvp-banner::before{background:linear-gradient(90deg,rgba(251,191,36,.08),transparent 60%);}
-.streak-icon{font-size:24px;flex-shrink:0;animation:pulseIcon 1.6s ease-in-out infinite;}
+.streak-icon{font-size:32px;flex-shrink:0;animation:pulseIcon 1.6s ease-in-out infinite;}
 @keyframes pulseIcon{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 .streak-body{flex:1;min-width:0;}
-.streak-main{font-size:13px;font-weight:800;line-height:1.3;}
+.streak-main{font-size:17px;font-weight:800;line-height:1.3;}
 .streak-main.j{color:var(--j);}
 .streak-main.p{color:var(--p);}
 .streak-main.gold{color:var(--gold);}
 .streak-main em{font-style:normal;color:var(--gold);}
-.streak-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.streak-sub{font-size:13px;color:var(--muted);margin-top:4px;}
 .streak-dots{display:flex;gap:5px;flex-shrink:0;}
-.s-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;}
+.s-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;}
 .s-dot.j{background:rgba(91,156,246,.2);border:1.5px solid var(--j);color:var(--j);}
 .s-dot.p{background:rgba(251,146,60,.2);border:1.5px solid var(--p);color:var(--p);}
 .s-dot.fire{background:rgba(251,191,36,.12);border:1.5px solid var(--gold);color:var(--gold);animation:firePulse .9s ease-in-out infinite alternate;}
 @keyframes firePulse{from{box-shadow:0 0 3px rgba(251,191,36,.3)}to{box-shadow:0 0 10px rgba(251,191,36,.7)}}
 /* MVP 배지 */
-.mvp-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:var(--gold);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:2px 8px;margin-top:4px;}
+.mvp-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--gold);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:3px 10px;margin-top:5px;}
 /* day-card MVP 강조 */
 .day-mvp{font-size:10px;font-weight:700;color:var(--gold);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:3px;}
 .day-mvp-star{font-size:10px;}
@@ -742,7 +742,7 @@ function render({dateHeaders, jTeam, pTeam}){
         <div class="streak-sub">${shortD(latestDate)} ${winTeamLabel}팀 승리 최다 기여 · ${mvpScore}점</div>
         <div><span class="mvp-badge">✨ ${winTeamLabel}팀 기여도 1위</span></div>
       </div>
-      <div class="streak-icon" style="font-size:26px;flex-shrink:0;">🏅</div>
+      <div class="streak-icon" style="font-size:32px;flex-shrink:0;">🏅</div>
     `;
   })();
 
