@@ -53,21 +53,13 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .section-title{font-size:15px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:9px;}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--win);box-shadow:0 0 8px var(--win);animation:blink 1.4s ease infinite;}
 .section-meta{font-size:11px;font-weight:600;color:var(--muted);}
-.race-outer{position:relative;height:56px;background:var(--bg3);border-radius:12px;overflow:hidden;border:1px solid var(--bd);margin-bottom:8px;}
-.race-outer::after{content:'🏁';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:20px;opacity:.6;pointer-events:none;}
-.finish-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:.7;transform:translateX(-50%);}
-.j-track{position:absolute;left:0;top:0;bottom:0;right:50%;overflow:hidden;}
-.j-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--j2),var(--j));border-radius:0 6px 6px 0;transition:width 1.6s cubic-bezier(.34,1.2,.64,1);}
-.j-car{position:absolute;top:50%;transform:translateY(-50%);font-size:22px;transition:left 1.6s cubic-bezier(.34,1.2,.64,1);filter:drop-shadow(0 0 6px rgba(91,156,246,.8));animation:carBob .6s ease-in-out infinite;z-index:10;}
-.p-track{position:absolute;right:0;top:0;bottom:0;left:50%;overflow:hidden;}
-.p-fill{position:absolute;right:0;top:0;bottom:0;background:linear-gradient(270deg,var(--p2),var(--p));border-radius:6px 0 0 6px;transition:width 1.6s cubic-bezier(.34,1.2,.64,1);}
-.p-car{position:absolute;top:50%;font-size:22px;transition:right 1.6s cubic-bezier(.34,1.2,.64,1);filter:drop-shadow(0 0 6px rgba(251,146,60,.8));animation:carBobR .7s ease-in-out infinite;animation-delay:.15s;z-index:10;}
-.race-score-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;}
-.rs-j{color:var(--j);}
-.rs-p{color:var(--p);}
-.rs-mid{color:var(--muted);font-size:10px;}
-@keyframes carBob{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 3px))}}
-@keyframes carBobR{0%,100%{transform:translateY(-50%) scaleX(-1)}50%{transform:translateY(calc(-50% - 3px)) scaleX(-1)}}
+.chart-legend{display:flex;gap:16px;align-items:center;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted);}
+.legend-dot{width:10px;height:10px;border-radius:50%;}
+.legend-dot.j{background:var(--j);}
+.legend-dot.p{background:var(--p);}
+.legend-line-gold{width:14px;height:0;border-top:2px dashed var(--gold);}
+#raceChart{width:100%;display:block;border-radius:8px;}
 .weekly-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:22px 24px;margin-bottom:20px;animation:fadeUp .55s .23s ease both;}
 .week-block{margin-bottom:18px;}
 .week-block:last-child{margin-bottom:0;}
@@ -193,6 +185,7 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
 .rank-badge.bottom{background:rgba(244,63,94,.15);color:var(--lose);border:1px solid rgba(244,63,94,.4);}
 .tag-exempt{font-size:9px;font-weight:700;background:rgba(16,185,129,.12);color:var(--win);border:1px solid rgba(16,185,129,.3);border-radius:5px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
 .tag-edu{font-size:9px;font-weight:700;background:rgba(244,63,94,.12);color:var(--lose);border:1px solid rgba(244,63,94,.3);border-radius:5px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
+.tag-position{font-size:9px;font-weight:600;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--bd);border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle;white-space:nowrap;}
 .td-transfer{font-size:11px;font-weight:700;color:var(--gold);}
 .td-transfer-zero{font-size:11px;color:var(--muted);}
 .td-diff{font-size:11px;font-weight:700;}
@@ -256,21 +249,14 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
 
   <div class="race-wrap">
     <div class="section-hd">
-      <div class="section-title"><span class="live-dot"></span> 15승 레이스</div>
-      <div class="section-meta" id="race-meta"></div>
+      <div class="section-title"><span class="live-dot"></span> 누적 승수 추이</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot j"></div> J팀</div>
+        <div class="legend-item"><div class="legend-dot p"></div> P팀</div>
+        <div class="legend-item"><div class="legend-line-gold"></div> 목표 15승</div>
+      </div>
     </div>
-    <div class="race-outer">
-      <div class="finish-line"></div>
-      <div class="j-track"><div class="j-fill" id="j-fill" style="width:0%"></div></div>
-      <div class="j-car" id="j-car" style="left:4px">🚙</div>
-      <div class="p-track"><div class="p-fill" id="p-fill" style="width:0%"></div></div>
-      <div class="p-car" id="p-car" style="right:4px">🚕</div>
-    </div>
-    <div class="race-score-row">
-      <span class="rs-j" id="race-j-label"></span>
-      <span class="rs-mid">🏁 15승 결승선</span>
-      <span class="rs-p" id="race-p-label"></span>
-    </div>
+    <canvas id="raceChart" height="220"></canvas>
   </div>
 
   <div class="weekly-wrap">
@@ -451,7 +437,7 @@ function renderIndividualTable(){
       else if(eduNames.has(m.name))    badgeHtml = '<span class="rank-badge bottom">교육</span>';
 
       html += `<tr>
-        <td><div class="member-name"><span class="rank-dot" style="background:${tC}"></span>${m.name}${badgeHtml}</div></td>
+        <td><div class="member-name"><span class="rank-dot" style="background:${tC}"></span>${m.name}<span class="tag-position">${m.rank}</span>${badgeHtml}</div></td>
         <td><span class="team-chip ${chip}">${chip.toUpperCase()}</span></td>
         <td class="td-avg ${aT?'above-avg':'below-avg'}">${m.avg}</td>
         <td class="${m.transfer>0?'td-transfer':'td-transfer-zero'}">${m.transfer>0?(m.transfer/10000).toFixed(0)+'만':'-'}</td>
@@ -512,18 +498,129 @@ function render({dateHeaders, jTeam, pTeam}){
   document.getElementById('p-need').textContent=`15승까지 ${TARGET-pWins}승 필요`;
   document.getElementById('days-info').innerHTML=`${played}일 진행<br>${remaining}일 남음`;
 
-  // Race Bar
-  document.getElementById('race-meta').textContent=`${played}일 경과 · ${remaining}일 남음`;
-  document.getElementById('race-j-label').textContent=`← J팀 ${jWins}승`;
-  document.getElementById('race-p-label').textContent=`P팀 ${pWins}승 →`;
-  setTimeout(()=>{
-    const jP=Math.min((jWins/TARGET)*100,100), pP=Math.min((pWins/TARGET)*100,100);
-    document.getElementById('j-fill').style.width=jP+'%';
-    document.getElementById('p-fill').style.width=pP+'%';
-    const jTW=document.querySelector('.j-track').offsetWidth, pTW=document.querySelector('.p-track').offsetWidth;
-    document.getElementById('j-car').style.left=Math.max(4,4+(jP/100)*(jTW-40))+'px';
-    document.getElementById('p-car').style.right=Math.max(4,4+(pP/100)*(pTW-40))+'px';
-  },400);
+  // Cumulative Wins Chart
+  (function drawChart(){
+    const canvas = document.getElementById('raceChart');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // 누적 승수 데이터 계산
+    const labels = [];
+    const jCum = [];
+    const pCum = [];
+    let jAcc = 0, pAcc = 0;
+    // 시작점 (0,0)
+    labels.push('');
+    jCum.push(0);
+    pCum.push(0);
+    playedDates.forEach(d => {
+      if(dayResults[d].winner === 'j') jAcc++; else pAcc++;
+      labels.push(shortD(d));
+      jCum.push(jAcc);
+      pCum.push(pAcc);
+    });
+
+    function draw(){
+      const W = canvas.parentElement.offsetWidth - 52;
+      const H = 220;
+      canvas.width = W;
+      canvas.height = H;
+      const PAD = {top:16, right:24, bottom:36, left:36};
+      const cW = W - PAD.left - PAD.right;
+      const cH = H - PAD.top - PAD.bottom;
+      const MAX = TARGET;
+      const n = labels.length;
+      ctx.clearRect(0,0,W,H);
+
+      // 그리드
+      ctx.strokeStyle='rgba(255,255,255,.05)';
+      ctx.lineWidth=1;
+      [0,5,10,15].forEach(v=>{
+        const y=PAD.top+cH-(v/MAX)*cH;
+        ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(PAD.left+cW,y);ctx.stroke();
+        ctx.fillStyle='rgba(255,255,255,.22)';
+        ctx.font='10px Pretendard,sans-serif';
+        ctx.textAlign='right';
+        ctx.fillText(v,PAD.left-6,y+4);
+      });
+
+      // 목표선
+      const tY=PAD.top;
+      ctx.strokeStyle='rgba(251,191,36,.45)';
+      ctx.lineWidth=1.5;
+      ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(PAD.left,tY);ctx.lineTo(PAD.left+cW,tY);ctx.stroke();
+      ctx.setLineDash([]);
+
+      if(n < 2){ return; }
+
+      const xP=i=>PAD.left+(i/(n-1))*cW;
+      const yP=v=>PAD.top+cH-(v/MAX)*cH;
+
+      // 면적 그라디언트
+      function drawArea(data, r, g, b){
+        const grad=ctx.createLinearGradient(0,PAD.top,0,PAD.top+cH);
+        grad.addColorStop(0,`rgba(${r},${g},${b},.22)`);
+        grad.addColorStop(1,`rgba(${r},${g},${b},.01)`);
+        ctx.beginPath();
+        ctx.moveTo(xP(0),yP(data[0]));
+        data.forEach((v,i)=>{if(i>0)ctx.lineTo(xP(i),yP(v));});
+        ctx.lineTo(xP(n-1),PAD.top+cH);
+        ctx.lineTo(xP(0),PAD.top+cH);
+        ctx.closePath();
+        ctx.fillStyle=grad;ctx.fill();
+      }
+
+      // 선
+      function drawLine(data, color){
+        ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';
+        ctx.beginPath();
+        data.forEach((v,i)=>i===0?ctx.moveTo(xP(i),yP(v)):ctx.lineTo(xP(i),yP(v)));
+        ctx.stroke();
+      }
+
+      // 점
+      function drawDots(data, color){
+        data.forEach((v,i)=>{
+          if(i===0) return;
+          ctx.beginPath();ctx.arc(xP(i),yP(v),4,0,Math.PI*2);
+          ctx.fillStyle=color;ctx.fill();
+          ctx.strokeStyle='rgba(9,9,15,.85)';ctx.lineWidth=2;ctx.stroke();
+        });
+      }
+
+      // 마지막 점 값 라벨
+      function drawLastLabel(data, color){
+        const last=data[n-1];
+        if(last===undefined) return;
+        const x=xP(n-1), y=yP(last);
+        ctx.fillStyle=color;ctx.font='bold 11px Pretendard,sans-serif';ctx.textAlign='left';
+        ctx.fillText(last+'승', x+8, y+4);
+      }
+
+      drawArea(jCum,91,156,246);
+      drawArea(pCum,251,146,60);
+      drawLine(jCum,'#5b9cf6');
+      drawLine(pCum,'#fb923c');
+      drawDots(jCum,'#5b9cf6');
+      drawDots(pCum,'#fb923c');
+      drawLastLabel(jCum,'#5b9cf6');
+      drawLastLabel(pCum,'#fb923c');
+
+      // X축 라벨 (첫번째 빈 라벨 제외)
+      ctx.fillStyle='rgba(255,255,255,.3)';
+      ctx.font='10px Pretendard,sans-serif';
+      ctx.textAlign='center';
+      labels.forEach((l,i)=>{
+        if(!l) return;
+        const step = n <= 6 ? 1 : Math.ceil(n/6);
+        if((i-1)%step===0 || i===n-1) ctx.fillText(l,xP(i),H-8);
+      });
+    }
+
+    draw();
+    window.addEventListener('resize', draw);
+  })();
 
   // Weekly
   const wCont=document.getElementById('weeks-container'); wCont.innerHTML='';
@@ -555,7 +652,7 @@ function render({dateHeaders, jTeam, pTeam}){
     });
     block.appendChild(dDiv); wCont.appendChild(block);
   });
- 
+  document.getElementById('week-meta').textContent=`총 ${TOTAL_WD}평일 · J ${totalJ}승 · P ${totalP}승`;
 
   // Stakes
   const jLeading=jWins>=pWins;
