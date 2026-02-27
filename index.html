@@ -30,36 +30,62 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .loading-text{font-size:15px;font-weight:600;color:var(--sub);}
 .loading-sub{font-size:12px;margin-top:6px;}
 #error-msg{display:none;text-align:center;padding:60px 20px;}
-.score-hero{display:grid;grid-template-columns:1fr auto 1fr;background:var(--bg2);border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin-bottom:12px;animation:fadeUp .55s .1s ease both;}
-.score-side{padding:14px 20px;display:flex;align-items:center;gap:14px;}
-.score-side.j{background:linear-gradient(140deg,rgba(91,156,246,.13) 0%,transparent 60%);}
-.score-side.p{background:linear-gradient(220deg,rgba(251,146,60,.13) 0%,transparent 60%);flex-direction:row-reverse;}
-.s-lbl{display:none;}
-.s-name{font-size:18px;font-weight:900;letter-spacing:-.3px;}
+/* ── score-hero 새 레이아웃 ── */
+.score-hero{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;overflow:hidden;margin-bottom:12px;animation:fadeUp .55s .1s ease both;}
+.score-hero-top{display:grid;grid-template-columns:1fr auto 1fr;}
+.score-side{padding:18px 22px 16px;display:flex;align-items:center;gap:0;position:relative;}
+.score-side.j{background:linear-gradient(140deg,rgba(91,156,246,.13) 0%,transparent 70%);}
+.score-side.p{background:linear-gradient(220deg,rgba(251,146,60,.13) 0%,transparent 70%);flex-direction:row-reverse;}
+/* 승수 숫자 - 테두리쪽 배치 */
+.s-wins-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid var(--gold);border-radius:14px;padding:10px 18px;min-width:80px;}
+.score-side.j .s-wins-wrap{margin-right:16px;}
+.score-side.p .s-wins-wrap{margin-left:16px;}
+.s-wins{font-size:56px;font-weight:900;line-height:1;letter-spacing:-2px;}
+.score-side.j .s-wins{color:var(--j);text-shadow:0 0 28px var(--jg);}
+.score-side.p .s-wins{color:var(--p);text-shadow:0 0 28px var(--pg);}
+.s-unit{font-size:15px;font-weight:700;opacity:.7;margin-top:2px;}
+.score-side.j .s-unit{color:var(--j);}
+.score-side.p .s-unit{color:var(--p);}
+.s-meta{display:flex;flex-direction:column;gap:4px;flex:1;}
+.score-side.p .s-meta{text-align:right;align-items:flex-end;}
+.s-name{font-size:20px;font-weight:900;letter-spacing:-.5px;}
 .score-side.j .s-name{color:var(--j);}
 .score-side.p .s-name{color:var(--p);}
-.s-wins{font-size:38px;font-weight:900;line-height:1;letter-spacing:-1px;}
-.score-side.j .s-wins{color:var(--j);text-shadow:0 0 24px var(--jg);}
-.score-side.p .s-wins{color:var(--p);text-shadow:0 0 24px var(--pg);}
-.s-unit{font-size:13px;font-weight:600;vertical-align:super;}
-.s-meta{display:flex;flex-direction:column;gap:1px;}
-.s-sub{font-size:10px;color:var(--muted);}
-.s-need{font-size:10px;font-weight:600;color:var(--sub);}
+.s-need{font-size:11px;font-weight:700;color:var(--gold);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:99px;padding:2px 10px;display:inline-block;}
+.s-sub{display:none;}
+.s-lbl{display:none;}
 .score-center{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);gap:5px;padding:12px 18px;white-space:nowrap;}
 .vs-txt{font-size:13px;font-weight:900;color:rgba(255,255,255,.12);letter-spacing:3px;}
 .target-chip{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--gold);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:2px 10px;}
 .days-info{font-size:10px;color:var(--muted);text-align:center;line-height:1.7;font-weight:500;}
+/* 최근 5경기 바 */
+.recent5-bar{display:flex;align-items:center;gap:0;border-top:1px solid var(--bd);padding:10px 22px;background:rgba(255,255,255,.015);}
+.recent5-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-right:12px;white-space:nowrap;}
+.recent5-cards{display:flex;gap:6px;flex:1;}
+.r5-card{flex:1;min-width:0;border-radius:8px;padding:6px 4px;text-align:center;border:1px solid var(--bd);}
+.r5-card.r5-j{background:rgba(91,156,246,.12);border-color:rgba(91,156,246,.35);}
+.r5-card.r5-p{background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.35);}
+.r5-card.r5-empty{opacity:.3;}
+.r5-date{font-size:9px;font-weight:600;color:var(--muted);margin-bottom:3px;}
+.r5-winner{font-size:11px;font-weight:800;}
+.r5-card.r5-j .r5-winner{color:var(--j);}
+.r5-card.r5-p .r5-winner{color:var(--p);}
+.r5-score{font-size:9px;color:var(--muted);margin-top:1px;}
 /* 스트릭 배너 */
-.streak-banner{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:14px;margin-bottom:12px;position:relative;overflow:hidden;animation:fadeUp .55s .12s ease both;}
+.banners-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+@media(max-width:640px){.banners-row{grid-template-columns:1fr;}}
+.streak-banner{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;animation:fadeUp .55s .12s ease both;}
 .streak-banner::before{content:'';position:absolute;inset:0;pointer-events:none;}
 .streak-banner.j-streak::before{background:linear-gradient(90deg,rgba(91,156,246,.09),transparent 60%);}
 .streak-banner.p-streak::before{background:linear-gradient(90deg,rgba(251,146,60,.09),transparent 60%);}
+.streak-banner.mvp-banner::before{background:linear-gradient(90deg,rgba(251,191,36,.08),transparent 60%);}
 .streak-icon{font-size:24px;flex-shrink:0;animation:pulseIcon 1.6s ease-in-out infinite;}
 @keyframes pulseIcon{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 .streak-body{flex:1;min-width:0;}
 .streak-main{font-size:13px;font-weight:800;line-height:1.3;}
 .streak-main.j{color:var(--j);}
 .streak-main.p{color:var(--p);}
+.streak-main.gold{color:var(--gold);}
 .streak-main em{font-style:normal;color:var(--gold);}
 .streak-sub{font-size:11px;color:var(--muted);margin-top:2px;}
 .streak-dots{display:flex;gap:5px;flex-shrink:0;}
@@ -68,6 +94,11 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .s-dot.p{background:rgba(251,146,60,.2);border:1.5px solid var(--p);color:var(--p);}
 .s-dot.fire{background:rgba(251,191,36,.12);border:1.5px solid var(--gold);color:var(--gold);animation:firePulse .9s ease-in-out infinite alternate;}
 @keyframes firePulse{from{box-shadow:0 0 3px rgba(251,191,36,.3)}to{box-shadow:0 0 10px rgba(251,191,36,.7)}}
+/* MVP 배지 */
+.mvp-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:var(--gold);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:2px 8px;margin-top:4px;}
+/* day-card MVP 강조 */
+.day-mvp{font-size:10px;font-weight:700;color:var(--gold);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:3px;}
+.day-mvp-star{font-size:10px;}
 .race-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:22px 26px;margin-bottom:20px;animation:fadeUp .55s .17s ease both;}
 .section-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .section-title{font-size:15px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:9px;}
@@ -260,8 +291,8 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-@media(max-width:720px){.score-hero{grid-template-columns:1fr auto 1fr;}.s-wins{font-size:30px;}.stakes-row-grid{grid-template-columns:1fr;}}
-@media(max-width:480px){.score-center{display:none;}.score-hero{grid-template-columns:1fr 1fr;}}
+@media(max-width:720px){.score-hero-top{grid-template-columns:1fr auto 1fr;}.s-wins{font-size:38px;}.stakes-row-grid{grid-template-columns:1fr;}.s-wins-wrap{min-width:60px;padding:8px 12px;}}
+@media(max-width:480px){.score-center{display:none;}.score-hero-top{grid-template-columns:1fr 1fr;}.s-wins{font-size:32px;}.recent5-bar{padding:8px 14px;}}
 </style>
 </head>
 <body>
@@ -287,31 +318,44 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
 
 <div id="dashboard" style="display:none">
   <div class="score-hero">
-    <div class="score-side j">
-      <div class="s-wins" id="j-wins">—</div>
-      <div class="s-meta">
-        <div class="s-name">J팀</div>
-        <div class="s-sub">현재 승수</div>
-        <div class="s-need" id="j-need"></div>
+    <div class="score-hero-top">
+      <div class="score-side j">
+        <div class="s-wins-wrap">
+          <div class="s-wins" id="j-wins">—</div>
+          <div class="s-unit">승</div>
+        </div>
+        <div class="s-meta">
+          <div class="s-name">J팀</div>
+          <div class="s-need" id="j-need"></div>
+        </div>
+      </div>
+      <div class="score-center">
+        <div class="vs-txt">VS</div>
+        <div class="target-chip">🏆 목표 15승</div>
+        <div class="days-info" id="days-info"></div>
+      </div>
+      <div class="score-side p">
+        <div class="s-wins-wrap">
+          <div class="s-wins" id="p-wins">—</div>
+          <div class="s-unit">승</div>
+        </div>
+        <div class="s-meta" style="text-align:right;align-items:flex-end;">
+          <div class="s-name">P팀</div>
+          <div class="s-need" id="p-need"></div>
+        </div>
       </div>
     </div>
-    <div class="score-center">
-      <div class="vs-txt">VS</div>
-      <div class="target-chip">🏆 목표 15승</div>
-      <div class="days-info" id="days-info"></div>
-    </div>
-    <div class="score-side p">
-      <div class="s-wins" id="p-wins">—</div>
-      <div class="s-meta" style="text-align:right;">
-        <div class="s-name">P팀</div>
-        <div class="s-sub">현재 승수</div>
-        <div class="s-need" id="p-need"></div>
-      </div>
+    <div class="recent5-bar">
+      <div class="recent5-label">최근 5경기</div>
+      <div class="recent5-cards" id="recent5-cards"></div>
     </div>
   </div>
 
-  <!-- 스트릭 배너 -->
-  <div id="streak-banner" style="display:none"></div>
+  <!-- 배너 2개: 연승 + MVP -->
+  <div class="banners-row">
+    <div id="streak-banner" style="display:none"></div>
+    <div id="mvp-banner" style="display:none"></div>
+  </div>
 
   <div class="race-wrap">
     <div class="section-hd">
@@ -581,18 +625,41 @@ function render({dateHeaders, jTeam, pTeam}){
   const todayLabel=`${String(now.getMonth()+1).padStart(2,'0')}월 ${String(now.getDate()).padStart(2,'0')}일`;
 
   // Score Hero
-  document.getElementById('j-wins').innerHTML=`${jWins}<span class="s-unit">승</span>`;
-  document.getElementById('p-wins').innerHTML=`${pWins}<span class="s-unit">승</span>`;
-  document.getElementById('j-need').textContent=`15승까지 ${TARGET-jWins}승 필요`;
-  document.getElementById('p-need').textContent=`15승까지 ${TARGET-pWins}승 필요`;
+  document.getElementById('j-wins').textContent=`${jWins}`;
+  document.getElementById('p-wins').textContent=`${pWins}`;
+  document.getElementById('j-need').textContent=`${TARGET-jWins}승 필요`;
+  document.getElementById('p-need').textContent=`${TARGET-pWins}승 필요`;
   document.getElementById('days-info').innerHTML=`${played}일 진행<br>${remaining}일 남음`;
 
-  // ── 스트릭 배너 ──
-  (function renderStreak(){
-    const banner = document.getElementById('streak-banner');
-    if(!banner || played < 1) return;
+  // 최근 5경기 카드
+  (function renderRecent5(){
+    const cont = document.getElementById('recent5-cards');
+    if(!cont) return;
+    const recent = playedDates.slice(-5);
+    cont.innerHTML = '';
+    // 5칸 항상 표시 (없으면 빈 칸)
+    for(let i=0;i<5;i++){
+      const d = recent[i];
+      const card = document.createElement('div');
+      if(d){
+        const res = dayResults[d];
+        card.className = `r5-card r5-${res.winner}`;
+        card.innerHTML = `<div class="r5-date">${shortD(d)}</div><div class="r5-winner">${res.winner==='j'?'J승':'P승'}</div><div class="r5-score">${res.j} : ${res.p}</div>`;
+      } else {
+        card.className = 'r5-card r5-empty';
+        card.innerHTML = `<div class="r5-date">—</div><div class="r5-winner" style="color:var(--muted)">—</div>`;
+      }
+      cont.appendChild(card);
+    }
+  })();
 
-    // 연속 streak 계산
+  // ── 스트릭 배너 (연승) + MVP 배너 ──
+  (function renderBanners(){
+    const streakBanner = document.getElementById('streak-banner');
+    const mvpBanner = document.getElementById('mvp-banner');
+    if(!streakBanner || !mvpBanner || played < 1) return;
+
+    // ── 연승 계산 ──
     let streak = 0, streakTeam = null;
     for(let i = playedDates.length - 1; i >= 0; i--){
       const w = dayResults[playedDates[i]].winner;
@@ -601,85 +668,77 @@ function render({dateHeaders, jTeam, pTeam}){
       else break;
     }
 
-    // 오늘 최고 점수 개인 찾기
-    const latestDate = playedDates[playedDates.length - 1];
-    const latestIdx = _allDateHeaders.indexOf(latestDate);
-    let topScorer = null, topScore = -1;
-    if(latestIdx >= 0){
-      [...jTeam, ...pTeam].forEach(m => {
-        const s = m.scores[latestIdx];
-        if(s !== null && s > topScore){ topScore = s; topScorer = m; }
-      });
-    }
-
-    // 전체 누적 최고 개인
-    let allTopScorer = null, allTopAvg = -1;
-    [...jTeam, ...pTeam].forEach(m => {
-      if(m.avg > allTopAvg){ allTopAvg = m.avg; allTopScorer = m; }
-    });
-
-    // 점수 압도적 차이 (어제 기준)
-    const bigWinDate = [...playedDates].reverse().find(d => Math.abs(dayResults[d].j - dayResults[d].p) >= 3);
-    const bigWinDiff = bigWinDate ? fix2(Math.abs(dayResults[bigWinDate].j - dayResults[bigWinDate].p)) : 0;
-    const bigWinTeam = bigWinDate ? dayResults[bigWinDate].winner : null;
-
-    // 메시지 풀 구성
-    const msgs = [];
-
-    if(streak >= 2){
-      const tc = streakTeam;
-      const streakMsgs = [
-        { icon:'🔥', main:`<em>${streak}연속</em> ${tc==='j'?'J':'P'}팀 우세!`, sub:`${streak}일 연속 팀 평균 리드 중 · 흐름을 잡았다`, cls:tc },
-        { icon:'⚡', main:`${tc==='j'?'J':'P'}팀 <em>${streak}연패 구간</em> 진입!`, sub:`상대팀이 흐름을 잡고 있어요 · 반전이 필요한 시점`, cls:tc },
-        { icon:'🎯', main:`${tc==='j'?'J':'P'}팀, ${streak}일 연속 안정적 우위`, sub:`팀 평균 점수가 꾸준히 앞서는 중`, cls:tc },
-      ];
-      msgs.push(...streakMsgs);
-    }
-
-    if(topScorer && topScore >= 8){
-      const tc = jTeam.find(m=>m.name===topScorer.name) ? 'j' : 'p';
-      msgs.push({ icon:'⭐', main:`${topScorer.name} <em>${topScore}점</em>으로 어제 최고 활약!`, sub:`${shortD(latestDate)} 기준 전체 개인 최고 점수`, cls:tc });
-    }
-
-    if(allTopScorer && allTopAvg > 0){
-      const tc = jTeam.find(m=>m.name===allTopScorer.name) ? 'j' : 'p';
-      msgs.push({ icon:'👑', main:`${allTopScorer.name}, 평균 <em>${allTopAvg}점</em>으로 전체 1위`, sub:`전 기간 통틀어 개인 평균 점수 최상위`, cls:tc });
-    }
-
-    if(bigWinDate && bigWinDiff >= 3){
-      const tc = bigWinTeam;
-      msgs.push({ icon:'💥', main:`${shortD(bigWinDate)} <em>${bigWinDiff}점 차</em> 압도적 승리`, sub:`${tc==='j'?'J':'P'}팀이 해당 날 압도적인 팀 평균 기록`, cls:tc });
-    }
-
-    if(jWins > pWins + 2){
-      msgs.push({ icon:'🚀', main:`J팀 <em>${jWins - pWins}승 격차</em>로 리드 중`, sub:`현재 페이스면 J팀 우위 흐름`, cls:'j' });
-    } else if(pWins > jWins + 2){
-      msgs.push({ icon:'🚀', main:`P팀 <em>${pWins - jWins}승 격차</em>로 리드 중`, sub:`현재 페이스면 P팀 우위 흐름`, cls:'p' });
-    } else if(Math.abs(jWins - pWins) <= 1){
-      msgs.push({ icon:'⚔️', main:`현재 <em>초접전!</em> ${jWins}승 vs ${pWins}승`, sub:`단 한 경기 차이 · 오늘 결과가 분수령`, cls:'j' });
-    }
-
-    if(msgs.length === 0) return;
-
-    // 랜덤 or 가장 최신 streak 우선
-    const chosen = msgs[0];
-
-    // 최근 5일 도트
+    // ── 연승 배너 렌더링 ──
     const recentDots = playedDates.slice(-5).map(d => {
       const w = dayResults[d].winner;
       const isLast = d === playedDates[playedDates.length-1];
       return `<div class="s-dot ${isLast && streak >= 2 ? 'fire' : w}">${w==='j'?'J':'P'}</div>`;
     }).join('');
 
-    banner.className = `streak-banner ${chosen.cls}-streak`;
-    banner.style.display = 'flex';
-    banner.innerHTML = `
-      <div class="streak-icon">${chosen.icon}</div>
+    let streakIcon, streakMain, streakSub, streakCls;
+    if(streak >= 3){
+      streakCls = streakTeam;
+      streakIcon = '🔥';
+      streakMain = `<em>${streak}연승</em> ${streakTeam==='j'?'J':'P'}팀 질주 중!`;
+      streakSub = `${streak}일 연속 우세 · 상대팀 반전이 필요한 시점`;
+    } else if(streak === 2){
+      streakCls = streakTeam;
+      streakIcon = '⚡';
+      streakMain = `${streakTeam==='j'?'J':'P'}팀 <em>2연승</em> 달성!`;
+      streakSub = `연속 흐름 잡는 중 · 오늘도 집중`;
+    } else if(Math.abs(jWins - pWins) <= 1){
+      streakCls = 'j';
+      streakIcon = '⚔️';
+      streakMain = `초접전! <em>${jWins}승</em> vs <em>${pWins}승</em>`;
+      streakSub = `한 경기 차이 · 매일이 분수령`;
+    } else {
+      const leading = jWins > pWins ? 'j' : 'p';
+      const diff = Math.abs(jWins - pWins);
+      streakCls = leading;
+      streakIcon = '🚀';
+      streakMain = `${leading==='j'?'J':'P'}팀 <em>${diff}승 차</em> 리드`;
+      streakSub = `현재 ${leading==='j'?'J':'P'}팀 페이스 우세`;
+    }
+
+    streakBanner.className = `streak-banner ${streakCls}-streak`;
+    streakBanner.style.display = 'flex';
+    streakBanner.innerHTML = `
+      <div class="streak-icon">${streakIcon}</div>
       <div class="streak-body">
-        <div class="streak-main ${chosen.cls}">${chosen.main}</div>
-        <div class="streak-sub">${chosen.sub}</div>
+        <div class="streak-main ${streakCls}">${streakMain}</div>
+        <div class="streak-sub">${streakSub}</div>
       </div>
       <div class="streak-dots">${recentDots}</div>
+    `;
+
+    // ── MVP 배너: 전날(가장 최근 경기일) 승팀 기여도 1위 ──
+    const latestDate = playedDates[playedDates.length - 1];
+    const latestIdx = _allDateHeaders.indexOf(latestDate);
+    if(latestIdx < 0){ mvpBanner.style.display='none'; return; }
+
+    const latestRes = dayResults[latestDate];
+    const winTeamMembers = latestRes.winner === 'j' ? jTeam : pTeam;
+    const winTeamLabel = latestRes.winner === 'j' ? 'J' : 'P';
+    const winTeamCls = latestRes.winner;
+
+    // 승팀 멤버 중 해당 날 최고 점수 찾기
+    let mvpMember = null, mvpScore = -1;
+    winTeamMembers.forEach(m => {
+      const s = m.scores[latestIdx];
+      if(s !== null && s > mvpScore){ mvpScore = s; mvpMember = m; }
+    });
+
+    if(!mvpMember){ mvpBanner.style.display='none'; return; }
+
+    mvpBanner.className = `streak-banner mvp-banner`;
+    mvpBanner.style.display = 'flex';
+    mvpBanner.innerHTML = `
+      <div class="streak-icon" style="animation:none;font-size:26px;">🏅</div>
+      <div class="streak-body">
+        <div class="streak-main gold">⭐ MVP · ${mvpMember.name}</div>
+        <div class="streak-sub">${shortD(latestDate)} ${winTeamLabel}팀 승리 최다 기여 · ${mvpScore}점</div>
+        <div><span class="mvp-badge">✨ ${winTeamLabel}팀 기여도 1위</span></div>
+      </div>
     `;
   })();
 
@@ -932,11 +991,11 @@ function render({dateHeaders, jTeam, pTeam}){
     `;
 
     const trendDesc = jScoreTrend > pScoreTrend
-      ? `J팀이 최근 상승세(+${jScoreTrend.toFixed(2)})이며 P팀 대비 좋은 흐름`
+      ? `J팀이 최근 상승세(+${jScoreTrend.toFixed(2)}) · P팀 대비 좋은 흐름`
       : pScoreTrend > jScoreTrend
-      ? `P팀이 최근 상승세(+${pScoreTrend.toFixed(2)})이며 J팀 대비 좋은 흐름`
+      ? `P팀이 최근 상승세(+${pScoreTrend.toFixed(2)}) · J팀 대비 좋은 흐름`
       : '양팀 트렌드 비슷';
-    fNote.innerHTML=`📊 계산 기준: 전체 승률 50% + 최근 3경기 가중 승률 50% + 점수 트렌드 보정 · ${trendDesc} · 변동성이 ${uncertainty}아 예측 신뢰도는 <b>${uncertainty==='낮음'?'양호':'보통'}</b>`;
+    fNote.innerHTML=`📈 ${trendDesc} · 예측 신뢰도 <b>${uncertainty==='낮음'?'양호':'보통'}</b>`;
   })();
 
   // Weekly
@@ -961,16 +1020,31 @@ function render({dateHeaders, jTeam, pTeam}){
       } else if(res){
         const diff = fix2(Math.abs(res.j - res.p));
         const winColor = res.winner==='j' ? 'var(--j)' : 'var(--p)';
+        const dIdx = _allDateHeaders.indexOf(d);
+
+        // 승팀 MVP 계산
+        const winTeamMems = res.winner==='j' ? jTeam : pTeam;
+        let dayMvp = null, dayMvpScore = -1;
+        if(dIdx >= 0){
+          winTeamMems.forEach(m => {
+            const s = m.scores[dIdx];
+            if(s !== null && s > dayMvpScore){ dayMvpScore = s; dayMvp = m; }
+          });
+        }
+        const mvpHtml = dayMvp ? `<div class="day-mvp"><span class="day-mvp-star">⭐</span>${dayMvp.name} ${dayMvpScore}점</div>` : '';
+
         card.className=`day-card ${res.winner}-win${isT?' today-card':''}`;
         card.innerHTML=`${isT?'<div class="today-line"></div>':''}
           <div class="day-date">${shortD(d)}${isT?' 🔴':''}</div>
           <div class="day-scores"><span class="day-sc j">${res.j}</span><span class="day-sep">:</span><span class="day-sc p">${res.p}</span></div>
           <div class="day-badge ${res.winner}">${res.winner==='j'?'J팀 승':'P팀 승'}</div>
+          ${mvpHtml}
           <div class="day-detail">
             <div class="dd-title">SCORE</div>
             <div class="dd-score-row"><span class="dd-team" style="color:var(--j)">J</span><span class="dd-val" style="color:var(--j)">${res.j}</span></div>
             <div class="dd-score-row"><span class="dd-team" style="color:var(--p)">P</span><span class="dd-val" style="color:var(--p)">${res.p}</span></div>
             <div class="dd-diff" style="color:${winColor}">+${diff} 차</div>
+            ${dayMvp?`<div style="margin-top:5px;font-size:9px;color:var(--gold)">⭐ MVP ${dayMvp.name}</div>`:''}
           </div>`;
       } else {
         card.className='day-card upcoming';
