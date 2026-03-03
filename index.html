@@ -1080,19 +1080,30 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    // 전체 스케줄 날짜 (대체공휴일 제외) 기준으로 축 구성
     const HOLIDAYS = ['03월 02일'];
     const allScheduleDates = WEEK_SCHEDULE.flatMap(w => w.dates).filter(d => !HOLIDAYS.includes(d));
 
+    // 주차 마지막 유효날짜 → 기타매체 승리팀 매핑
+    const omByLastDate = {};
+    WEEK_SCHEDULE.forEach(wk => {
+      const valid = wk.dates.filter(d => !HOLIDAYS.includes(d));
+      if(!valid.length) return;
+      const w = (weeklyOtherMedia||{})[wk.label];
+      if(w) omByLastDate[valid[valid.length-1]] = w;
+    });
+
     const labels = ['시작'];
     const jCum = [0], pCum = [0];
-    const isPlayed = []; // 각 포인트가 실제 경기 여부
+    const isPlayed = [];
     isPlayed.push(false);
     let jAcc=0, pAcc=0;
     allScheduleDates.forEach(d => {
       labels.push(shortD(d));
       if(dayResults[d]){
         if(dayResults[d].winner==='j') jAcc++; else pAcc++;
+        // 주차 마지막 날이면 기타매체 승수도 누적
+        if(omByLastDate[d]==='j') jAcc++;
+        else if(omByLastDate[d]==='p') pAcc++;
         jCum.push(jAcc); pCum.push(pAcc);
         isPlayed.push(true);
       } else {
@@ -1481,21 +1492,28 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
   WEEK_SCHEDULE.forEach(wk=>{
     let wJ=0,wP=0;
     wk.dates.forEach(d=>{if(dayResults[d])dayResults[d].winner==='j'?wJ++:wP++;});
-    totalJ+=wJ;totalP+=wP;
-    const hasData=wk.dates.some(d=>dayResults[d]);
-    const sum=hasData?(wJ>wP?`<span class="week-wins-summary wws-j">J ${wJ}승 · P ${wP}승</span>`:wP>wJ?`<span class="week-wins-summary wws-p">J ${wJ}승 · P ${wP}승</span>`:`<span class="week-wins-summary wws-tie">J ${wJ}승 · P ${wP}승</span>`):`<span class="week-wins-summary wws-tie">예정</span>`;
-    const block=document.createElement('div'); block.className='week-block';
-    block.innerHTML=`<div class="week-label">${wk.label} &nbsp;(${shortD(wk.dates[0])}~${shortD(wk.dates[wk.dates.length-1])}) ${sum}</div>`;
 
-    // 주차 기타매체 승리팀
+    // 기타매체 승수 주차 합계에 포함
     const omWinner = (weeklyOtherMedia||{})[wk.label] || null;
+    if(omWinner==='j') wJ++; else if(omWinner==='p') wP++;
+
+    totalJ+=wJ; totalP+=wP;
+    const hasData = wk.dates.some(d=>dayResults[d]) || !!omWinner;
+    const sum = hasData
+      ? (wJ>wP ? `<span class="week-wins-summary wws-j">J ${wJ}승 · P ${wP}승</span>`
+        : wP>wJ ? `<span class="week-wins-summary wws-p">J ${wJ}승 · P ${wP}승</span>`
+        : `<span class="week-wins-summary wws-tie">J ${wJ}승 · P ${wP}승</span>`)
+      : `<span class="week-wins-summary wws-tie">예정</span>`;
+
+    const block = document.createElement('div'); block.className='week-block';
+    block.innerHTML = `<div class="week-label">${wk.label} &nbsp;(${shortD(wk.dates[0])}~${shortD(wk.dates[wk.dates.length-1])}) ${sum}</div>`;
+
     const omCls = omWinner ? omWinner+'-win' : 'upcoming';
     const omTxt = omWinner ? (omWinner==='j'?'J팀':'P팀') : '—';
 
-    // 날짜 카드 + 기타매체 사이드
-    const wrap = document.createElement('div'); wrap.className='week-days-wrap';
-    const dDiv=document.createElement('div'); dDiv.className='week-days-main';
-    dDiv.style.gridTemplateColumns=`repeat(${wk.dates.length},1fr)`;
+    // 모든 카드 동일 1fr 그리드 (날짜수 + 기타매체 1)
+    const wrap = document.createElement('div');
+    wrap.style.cssText = `display:grid;gap:8px;grid-template-columns:repeat(${wk.dates.length + 1},1fr);`;
 
     wk.dates.forEach(d=>{
       const res=dayResults[d], isT=d===todayLabel, card=document.createElement('div');
@@ -1507,8 +1525,6 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
         const diff = fix2(Math.abs(res.j - res.p));
         const winColor = res.winner==='j' ? 'var(--j)' : 'var(--p)';
         const dIdx = _allDateHeaders.indexOf(d);
-
-        // 승팀 MVP 계산
         const winTeamMems = res.winner==='j' ? jTeam : pTeam;
         let dayMvp = null, dayMvpScore = -1;
         if(dIdx >= 0){
@@ -1518,7 +1534,6 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
           });
         }
         const mvpHtml = dayMvp ? `<div class="day-mvp"><span class="day-mvp-star">⭐</span>${dayMvp.name} ${dayMvpScore}점</div>` : '';
-
         card.className=`day-card ${res.winner}-win${isT?' today-card':''}`;
         card.innerHTML=`${isT?'<div class="today-line"></div>':''}
           <div class="day-date">${shortD(d)}${isT?' 🔴':''}</div>
@@ -1536,32 +1551,50 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
         card.className='day-card upcoming';
         card.innerHTML=`<div class="day-date">${shortD(d)}</div><div class="day-scores"><span style="color:var(--muted);font-size:16px;font-weight:300">—</span></div><div class="day-badge tbd">예정</div>`;
       }
-      dDiv.appendChild(card);
+      wrap.appendChild(card);
     });
 
-    // 기타매체 사이드 카드
-    const sDiv=document.createElement('div'); sDiv.className='week-days-side';
-    sDiv.innerHTML=`<div class="om-side-card ${omCls}">
-      <div class="om-side-lbl">기타매체</div>
-      <div class="om-side-winner">${omTxt}</div>
-      <div class="om-side-badge">${omWinner ? (omWinner==='j'?'J팀 승':'P팀 승') : '예정'}</div>
-    </div>`;
+    // 기타매체 카드 — day-card와 완전히 동일한 구조/크기
+    const omCard = document.createElement('div');
+    omCard.className = `day-card ${omCls}`;
+    if(omWinner) omCard.style.cssText = `border-color:rgba(167,139,250,.4);background:linear-gradient(160deg,rgba(167,139,250,.07),var(--bg3))`;
+    omCard.innerHTML = `
+      <div class="day-date" style="color:rgba(167,139,250,.8)">기타매체</div>
+      <div class="day-scores"><span class="day-sc ${omWinner||''}" style="${!omWinner?'color:var(--muted)':''};font-size:18px">${omTxt}</span></div>
+      <div class="day-badge" style="${omWinner==='j'?'background:rgba(91,156,246,.15);color:var(--j)':omWinner==='p'?'background:rgba(251,146,60,.15);color:var(--p)':'background:rgba(255,255,255,.05);color:var(--muted)'}">${omWinner?(omWinner==='j'?'J팀 승':'P팀 승'):'예정'}</div>`;
+    wrap.appendChild(omCard);
 
-    wrap.appendChild(dDiv);
-    wrap.appendChild(sDiv);
     block.appendChild(wrap);
     wCont.appendChild(block);
   });
-  
 
-  // Stakes
+
+  // Stakes — 동점일 때 양팀 모두 면제/교육 표시
+  const isTie = jWins === pWins;
+  let exemptNames, eduNames;
+  if(isTie){
+    // 동점: 양팀 각 이관매출 상위2 면제 후보, 하위2 교육 후보
+    exemptNames = new Set([
+      ...jTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2),
+      ...pTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2)
+    ].map(m=>m.name));
+    eduNames = new Set([
+      ...jTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2),
+      ...pTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2)
+    ].map(m=>m.name));
+  } else {
+    const jLeading2 = jWins > pWins;
+    const winTeam2  = jLeading2 ? jTeam : pTeam;
+    const loseTeam2 = jLeading2 ? pTeam : jTeam;
+    exemptNames = new Set(winTeam2.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2).map(m=>m.name));
+    eduNames    = new Set(loseTeam2.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2).map(m=>m.name));
+  }
+
   const jLeading=jWins>=pWins;
   const winTeam=jLeading?jTeam:pTeam, loseTeam=jLeading?pTeam:jTeam;
   const wL=jLeading?'j':'p', lL=jLeading?'p':'j';
   const exemptList=winTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2);
   const eduList=loseTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2);
-  const exemptNames=new Set(exemptList.map(m=>m.name));
-  const eduNames=new Set(eduList.map(m=>m.name));
 
   const buildStakes=(list,id,team)=>{
     const body=document.getElementById(id); body.innerHTML='';
