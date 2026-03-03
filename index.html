@@ -334,6 +334,13 @@ th.om-th{background:rgba(167,139,250,.09);color:rgba(180,155,255,.85);border-lef
 .exempt .s-transfer{color:var(--win);}
 .edu    .s-transfer{color:var(--lose);}
 .s-note{font-size:11px;color:var(--muted);padding:6px 4px 0;line-height:1.7;}
+/* 동점 시 2열 레이아웃 */
+.stakes-tie-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stakes-tie-col{}
+.stakes-tie-team-lbl{font-size:10px;font-weight:800;letter-spacing:.8px;margin-bottom:6px;padding:3px 8px;border-radius:6px;display:inline-block;}
+.stakes-tie-team-lbl.j{color:var(--j);background:var(--js);border:1px solid rgba(91,156,246,.25);}
+.stakes-tie-team-lbl.p{color:var(--p);background:var(--ps);border:1px solid rgba(251,146,60,.25);}
+@media(max-width:480px){.stakes-tie-grid{grid-template-columns:1fr;}}
 
 /* ── 개인 점수 테이블 ── */
 .ind-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;overflow:hidden;animation:fadeUp .55s .38s ease both;}
@@ -898,7 +905,7 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     const recent5 = combinedTimeline.slice(-5);
     const recentDots = recent5.map((ev, idx) => {
       const isLast = idx === recent5.length - 1;
-      const dotLabel = ev.isOm ? '📺' : ev.winner.toUpperCase();
+      const dotLabel = ev.winner.toUpperCase();
       return `<div class="s-dot ${isLast && streak >= 2 ? 'fire' : ev.winner}" title="${ev.label}">${dotLabel}</div>`;
     }).join('');
 
@@ -1613,20 +1620,63 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
   const exemptList=winTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2);
   const eduList=loseTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2);
 
-  const buildStakes=(list,id,team)=>{
-    const body=document.getElementById(id); body.innerHTML='';
-    if(!list.length){body.innerHTML='<div class="s-note">이관매출 데이터를 입력해주세요</div>';return;}
+  const buildStakesList=(list,team)=>{
+    const frag=document.createDocumentFragment();
     list.forEach((m,i)=>{
       const row=document.createElement('div'); row.className='s-row';
       row.innerHTML=`<div class="s-rank">${i+1}</div><div class="s-name-st">${m.name}</div><span class="s-team-chip ${team}">${team.toUpperCase()}팀</span><div class="s-transfer">${m.transfer>0?m.transfer.toLocaleString('ko-KR')+'원':'데이터 없음'}</div>`;
-      body.appendChild(row);
+      frag.appendChild(row);
     });
-    const note=document.createElement('div'); note.className='s-note';
-    note.innerHTML=`※ 현재 기준 · 인턴 제외 · 최종 확정은 프로모션 종료 후<br>※ 승리팀 기준: 현재 리딩팀(${jLeading?'J':'P'}팀)`;
-    body.appendChild(note);
+    return frag;
   };
-  buildStakes(exemptList,'exempt-body',wL);
-  buildStakes(eduList,'edu-body',lL);
+
+  const buildStakes=(list,id,team,list2,team2)=>{
+    const body=document.getElementById(id); body.innerHTML='';
+    if(list2!==undefined){
+      // 동점: 2열 레이아웃 — J팀 | P팀
+      const grid=document.createElement('div'); grid.className='stakes-tie-grid';
+      // J팀 컬럼
+      const colA=document.createElement('div'); colA.className='stakes-tie-col';
+      const lblA=document.createElement('div'); lblA.className=`stakes-tie-team-lbl ${team}`; lblA.textContent=`${team.toUpperCase()}팀`;
+      colA.appendChild(lblA);
+      if(list.length) colA.appendChild(buildStakesList(list,team));
+      else { const e=document.createElement('div'); e.className='s-note'; e.textContent='데이터 없음'; colA.appendChild(e); }
+      // P팀 컬럼
+      const colB=document.createElement('div'); colB.className='stakes-tie-col';
+      const lblB=document.createElement('div'); lblB.className=`stakes-tie-team-lbl ${team2}`; lblB.textContent=`${team2.toUpperCase()}팀`;
+      colB.appendChild(lblB);
+      if(list2.length) colB.appendChild(buildStakesList(list2,team2));
+      else { const e=document.createElement('div'); e.className='s-note'; e.textContent='데이터 없음'; colB.appendChild(e); }
+      grid.appendChild(colA); grid.appendChild(colB);
+      body.appendChild(grid);
+      const note=document.createElement('div'); note.className='s-note';
+      note.innerHTML=`※ 동점 — 양팀 모두 해당 · 인턴 제외 · 최종 확정은 프로모션 종료 후`;
+      body.appendChild(note);
+    } else {
+      if(!list.length){body.innerHTML='<div class="s-note">이관매출 데이터를 입력해주세요</div>';return;}
+      body.appendChild(buildStakesList(list,team));
+      const note=document.createElement('div'); note.className='s-note';
+      note.innerHTML=`※ 현재 기준 · 인턴 제외 · 최종 확정은 프로모션 종료 후<br>※ 승리팀 기준: 현재 리딩팀(${jLeading?'J':'P'}팀)`;
+      body.appendChild(note);
+    }
+  };
+
+  if(isTie){
+    const jExemptList=jTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2);
+    const pExemptList=pTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2);
+    const jEduList=jTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2);
+    const pEduList=pTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2);
+    // 동점: exempt 설명 업데이트
+    document.querySelector('.stakes-card.exempt .stakes-desc').textContent='동점 — 양팀 이관매출 상위 2인 (인턴 제외)';
+    document.querySelector('.stakes-card.edu .stakes-desc').textContent='동점 — 양팀 이관매출 하위 2인 (인턴 제외)';
+    buildStakes(jExemptList,'exempt-body','j',pExemptList,'p');
+    buildStakes(jEduList,'edu-body','j',pEduList,'p');
+  } else {
+    document.querySelector('.stakes-card.exempt .stakes-desc').textContent='승리팀 이관매출 상위 2인 (인턴 제외)';
+    document.querySelector('.stakes-card.edu .stakes-desc').textContent='패배팀 이관매출 하위 2인 (인턴 제외)';
+    buildStakes(exemptList,'exempt-body',wL);
+    buildStakes(eduList,'edu-body',lL);
+  }
 
   // ── 개인 테이블 페이지네이션 준비 ──
   // playedDates를 최신→과거 순으로 뒤집기
