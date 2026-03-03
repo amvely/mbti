@@ -98,6 +98,46 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .s-dot.p{background:rgba(251,146,60,.2);border:1.5px solid var(--p);color:var(--p);}
 .s-dot.fire{background:rgba(251,191,36,.12);border:1.5px solid var(--gold);color:var(--gold);animation:firePulse .9s ease-in-out infinite alternate;}
 @keyframes firePulse{from{box-shadow:0 0 3px rgba(251,191,36,.3)}to{box-shadow:0 0 10px rgba(251,191,36,.7)}}
+
+/* ── 팀 모멘텀 게이지 ── */
+.momentum-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:16px 20px;margin-bottom:12px;animation:fadeUp .55s .14s ease both;}
+.momentum-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;}
+.mom-side{display:flex;flex-direction:column;gap:3px;}
+.mom-side.j-side{align-items:flex-start;}
+.mom-side.p-side{align-items:flex-end;text-align:right;}
+.mom-team-lbl{font-size:13px;font-weight:900;letter-spacing:-.3px;}
+.mom-side.j-side .mom-team-lbl{color:var(--j);}
+.mom-side.p-side .mom-team-lbl{color:var(--p);}
+.mom-recent{font-size:10px;font-weight:700;color:var(--muted);}
+.mom-recent em{font-style:normal;}
+.mom-side.j-side .mom-recent em{color:var(--j);}
+.mom-side.p-side .mom-recent em{color:var(--p);}
+.mom-avg{font-size:10px;color:var(--muted);}
+.mom-avg span{font-weight:700;color:var(--sub);}
+.mom-center-col{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:160px;}
+@media(max-width:480px){.mom-center-col{min-width:90px;}}
+.mom-bar-lbl{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.mom-bar-outer{width:100%;height:18px;background:var(--bg3);border-radius:99px;border:1px solid var(--bd);overflow:hidden;position:relative;}
+.mom-j-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--j2),var(--j));border-radius:99px 0 0 99px;width:0%;transition:width 1.3s cubic-bezier(.34,1.2,.64,1);}
+.mom-p-fill{position:absolute;right:0;top:0;bottom:0;background:linear-gradient(270deg,var(--p2),var(--p));border-radius:0 99px 99px 0;width:0%;transition:width 1.3s cubic-bezier(.34,1.2,.64,1);}
+.mom-bar-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.12);transform:translateX(-50%);}
+.mom-pct-row{display:flex;justify-content:space-between;width:100%;}
+.mom-pct{font-size:10px;font-weight:800;}
+.mom-pct.j{color:var(--j);}
+.mom-pct.p{color:var(--p);}
+.mom-factor-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.mom-factor{flex:1;min-width:0;background:var(--bg3);border:1px solid var(--bd);border-radius:9px;padding:7px 8px;text-align:center;}
+.mom-f-icon{font-size:14px;}
+.mom-f-lbl{font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.3px;margin:3px 0;}
+.mom-f-win{font-size:10px;font-weight:800;}
+.mom-f-win.j{color:var(--j);}
+.mom-f-win.p{color:var(--p);}
+.mom-f-win.tie{color:var(--muted);}
+.mom-f-bar{height:2px;background:rgba(255,255,255,.05);border-radius:99px;overflow:hidden;margin-top:4px;}
+.mom-f-fill{height:100%;border-radius:99px;}
+.mom-f-fill.j{background:var(--j);}
+.mom-f-fill.p{background:var(--p);}
+.mom-f-fill.tie{background:var(--muted);}
 /* MVP 배지 */
 .mvp-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--gold);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:3px 10px;margin-top:5px;}
 /* day-card MVP 강조 */
@@ -414,6 +454,31 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
   <div class="banners-row">
     <div id="streak-banner" style="display:none"></div>
     <div id="mvp-banner" style="display:none"></div>
+  </div>
+
+  <!-- 팀 모멘텀 게이지 -->
+  <div class="momentum-wrap" id="momentum-wrap" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="section-title" style="font-size:13px;"><span style="font-size:14px">🔥</span> 팀 모멘텀 <span style="font-size:10px;font-weight:500;color:var(--muted);margin-left:4px">최근 5경기 기준</span></div>
+      <div class="section-meta" id="momentum-meta"></div>
+    </div>
+    <div class="momentum-inner">
+      <div class="mom-side j-side" id="mom-j-side"></div>
+      <div class="mom-center-col">
+        <div class="mom-bar-lbl">모멘텀</div>
+        <div class="mom-bar-outer">
+          <div class="mom-j-fill" id="mom-j-fill"></div>
+          <div class="mom-p-fill" id="mom-p-fill"></div>
+          <div class="mom-bar-mid"></div>
+        </div>
+        <div class="mom-pct-row">
+          <span class="mom-pct j" id="mom-j-pct"></span>
+          <span class="mom-pct p" id="mom-p-pct"></span>
+        </div>
+      </div>
+      <div class="mom-side p-side" id="mom-p-side"></div>
+    </div>
+    <div class="mom-factor-row" id="mom-factor-row"></div>
   </div>
 
   <div class="race-wrap">
@@ -791,6 +856,126 @@ function render({dateHeaders, jTeam, pTeam}){
       </div>
       <div><span class="mvp-badge">✨ ${winTeamLabel}팀 기여도 1위</span></div>
     `;
+  })();
+
+  // ── 팀 모멘텀 게이지 ──
+  (function renderMomentum(){
+    const wrap = document.getElementById('momentum-wrap');
+    if(!wrap || played < 1) return;
+
+    const N = 5; // 최근 N경기
+    const recent = playedDates.slice(-N);
+
+    // 최근 N경기 승패
+    const jRecent = recent.filter(d => dayResults[d].winner === 'j').length;
+    const pRecent = recent.filter(d => dayResults[d].winner === 'p').length;
+
+    // 최근 N경기 팀 평균점수
+    const recentIdxs = recent.map(d => _allDateHeaders.indexOf(d)).filter(i => i >= 0);
+    const teamRecentAvg = (team) => {
+      const vals = recentIdxs.flatMap(i => team.map(m => m.scores[i]).filter(v => v !== null));
+      return vals.length ? fix2(avgArr(vals)) : 0;
+    };
+    const jRecentAvg = teamRecentAvg(jTeam);
+    const pRecentAvg = teamRecentAvg(pTeam);
+
+    // 현재 연승 스트릭 (renderBanners와 동일 로직)
+    let streak = 0, streakTeam = null;
+    for(let i = playedDates.length - 1; i >= 0; i--){
+      const w = dayResults[playedDates[i]].winner;
+      if(streakTeam === null) streakTeam = w;
+      if(w === streakTeam) streak++;
+      else break;
+    }
+
+    // 전체 10점+ 고득점 횟수
+    const hiCount = (team) => {
+      let cnt = 0;
+      team.forEach(m => m.scores.forEach(s => { if(s !== null && s >= 10) cnt++; }));
+      return cnt;
+    };
+    const jHi = hiCount(jTeam), pHi = hiCount(pTeam);
+
+    // 모멘텀 점수 계산 (0~100)
+    // 최근 5경기 승률(40%) + 최근 평균점(30%) + 연승(20%) + 전체평균(10%)
+    const r5Total = jRecent + pRecent || 1;
+    const avgTotal = jRecentAvg + pRecentAvg || 1;
+    const totalAvgSum = jTeamAvg + pTeamAvg || 1;
+    const jStreakBonus = streakTeam === 'j' ? Math.min(streak * 8, 32) : 0;
+    const pStreakBonus = streakTeam === 'p' ? Math.min(streak * 8, 32) : 0;
+
+    const jMom = (jRecent/r5Total)*40 + (jRecentAvg/avgTotal)*30 + (jStreakBonus/32)*20 + (jTeamAvg/totalAvgSum)*10;
+    const pMom = (pRecent/r5Total)*40 + (pRecentAvg/avgTotal)*30 + (pStreakBonus/32)*20 + (pTeamAvg/totalAvgSum)*10;
+    const momTotal = jMom + pMom || 1;
+    const jMomPct = Math.round((jMom / momTotal) * 100);
+    const pMomPct = 100 - jMomPct;
+
+    // 게이지 바 (각각 50% 절반에서 확장)
+    const jBarW = Math.round(jMomPct / 2); // 최대 50%
+    const pBarW = Math.round(pMomPct / 2);
+
+    // 팀별 사이드 텍스트
+    const jStreakTxt = streakTeam === 'j' && streak >= 2 ? `🔥 <em>${streak}연승</em> 중` : `최근 <em>${jRecent}승</em> ${N-jRecent}패`;
+    const pStreakTxt = streakTeam === 'p' && streak >= 2 ? `🔥 <em>${streak}연승</em> 중` : `최근 <em>${pRecent}승</em> ${N-pRecent}패`;
+
+    document.getElementById('mom-j-side').innerHTML = `
+      <div class="mom-team-lbl">J팀</div>
+      <div class="mom-recent">${jStreakTxt}</div>
+      <div class="mom-avg">최근평균 <span>${jRecentAvg}점</span></div>
+    `;
+    document.getElementById('mom-p-side').innerHTML = `
+      <div class="mom-team-lbl">P팀</div>
+      <div class="mom-recent">${pStreakTxt}</div>
+      <div class="mom-avg">최근평균 <span>${pRecentAvg}점</span></div>
+    `;
+    document.getElementById('mom-j-pct').textContent = jMomPct + '%';
+    document.getElementById('mom-p-pct').textContent = pMomPct + '%';
+    document.getElementById('momentum-meta').textContent = `최근 ${recent.length}경기 · 점수 / 연승 / 승률 반영`;
+
+    // 팩터 카드 (4가지 세부 지표)
+    const factors = [
+      {
+        icon: '🏆', lbl: '최근 승률',
+        jV: jRecent, pV: pRecent, total: r5Total * 0.4,
+        jTxt: `${jRecent}/${recent.length}`, pTxt: `${pRecent}/${recent.length}`,
+        winner: jRecent > pRecent ? 'j' : pRecent > jRecent ? 'p' : 'tie'
+      },
+      {
+        icon: '📈', lbl: '최근 평균점',
+        jV: jRecentAvg, pV: pRecentAvg, total: avgTotal,
+        jTxt: `${jRecentAvg}점`, pTxt: `${pRecentAvg}점`,
+        winner: jRecentAvg > pRecentAvg ? 'j' : pRecentAvg > jRecentAvg ? 'p' : 'tie'
+      },
+      {
+        icon: '🔥', lbl: '연승 스트릭',
+        jV: streakTeam==='j'?streak:0, pV: streakTeam==='p'?streak:0, total: Math.max(streak,1),
+        jTxt: streakTeam==='j'&&streak>=2?`${streak}연승`:'—', pTxt: streakTeam==='p'&&streak>=2?`${streak}연승`:'—',
+        winner: streakTeam==='j'&&streak>=2?'j':streakTeam==='p'&&streak>=2?'p':'tie'
+      },
+      {
+        icon: '💥', lbl: '전체 평균점',
+        jV: jTeamAvg, pV: pTeamAvg, total: totalAvgSum,
+        jTxt: `${jTeamAvg}점`, pTxt: `${pTeamAvg}점`,
+        winner: jTeamAvg > pTeamAvg ? 'j' : pTeamAvg > jTeamAvg ? 'p' : 'tie'
+      }
+    ];
+    const winnerLabel = { j: 'J팀 ↑', p: 'P팀 ↑', tie: '동률' };
+    document.getElementById('mom-factor-row').innerHTML = factors.map(f => {
+      const barPct = f.total > 0 ? Math.round((f[f.winner==='j'?'jV':f.winner==='p'?'pV':'jV'] / f.total) * 100) : 50;
+      return `<div class="mom-factor">
+        <div class="mom-f-icon">${f.icon}</div>
+        <div class="mom-f-lbl">${f.lbl}</div>
+        <div class="mom-f-win ${f.winner}">${winnerLabel[f.winner]}</div>
+        <div class="mom-f-bar"><div class="mom-f-fill ${f.winner}" style="width:${Math.min(barPct,100)}%"></div></div>
+      </div>`;
+    }).join('');
+
+    wrap.style.display = 'block';
+    // 애니메이션: 짧은 딜레이 후 바 채우기
+    setTimeout(() => {
+      document.getElementById('mom-j-fill').style.width = jBarW + '%';
+      document.getElementById('mom-p-fill').style.width = pBarW + '%';
+    }, 300);
   })();
 
   // ── 누적 승수 추이 차트 (전체 날짜 기준) ──
