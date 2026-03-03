@@ -654,20 +654,22 @@ function parseData(rows) {
     if(c[1]==='J팀'&&c[2]==='이관매출'&&isDate(c[3])){section='jTransfer';continue;}
     if(c[1]==='P팀'&&c[2]==='이관매출'&&isDate(c[3])){section='pTransfer';continue;}
 
-    // 주차별 기타매체: A열='기타매체' → 섹션 진입, 이후 A열='1주차'~'5주차', B열=승리팀(J/P/j/p)
-    if(c[0]==='기타매체'&&c[1]==='승'){
+    // 주차별 기타매체: A열 또는 B열에 '기타매체' + 옆 셀 '승' → 섹션 진입 (A열 빈 시트 구조 대응)
+    if((c[0]==='기타매체'&&c[1]==='승')||(c[1]==='기타매체'&&c[2]==='승')){
       section='weeklyOther'; continue;
     }
     if(section==='weeklyOther'){
-      const wLabel = c[0]; // '1주차','2주차',...
-      if(wLabel && wLabel.includes('주차')){
-        const raw = (c[1]||'').toLowerCase();
+      // A열이 비어있으면 주차라벨=c[1], 승팀=c[2] / A열에 값 있으면 주차라벨=c[0], 승팀=c[1]
+      const wLabel = c[0].includes('주차') ? c[0] : c[1].includes('주차') ? c[1] : null;
+      const winnerRaw = c[0].includes('주차') ? (c[1]||'') : (c[2]||'');
+      if(wLabel){
+        const raw = winnerRaw.toLowerCase();
         const w = raw==='j'||raw.includes('j팀') ? 'j' : raw==='p'||raw.includes('p팀') ? 'p' : null;
         weeklyOtherMedia[wLabel] = w;
         continue;
       }
       // 빈 행이 나오면 섹션 종료
-      if(!wLabel) { section=null; continue; }
+      if(!c[0]&&!c[1]) { section=null; continue; }
     }
 
     // 개인 기타매체 점수: C59/C72 아래 — A열=직급, B열=이름, C열=점수(TOTAL)
