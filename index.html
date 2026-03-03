@@ -132,23 +132,78 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .rs-mid{color:var(--muted);font-size:10px;}
 @keyframes carBob{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 2px))}}
 @keyframes carBobR{0%,100%{transform:translateY(-50%) scaleX(-1)}50%{transform:translateY(calc(-50% - 2px)) scaleX(-1)}}
-/* 예측 카드 */
+/* ── 예측 분석 (Race-to-15 앙상블 모델) ── */
 .forecast-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:20px 24px;margin-bottom:20px;animation:fadeUp .55s .2s ease both;}
-.forecast-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;}
-.fc-card{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;}
-.fc-label{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+
+/* 우승확률 히어로 */
+.fc-hero{display:flex;border-radius:14px;overflow:hidden;border:1px solid var(--bd2);margin-bottom:14px;}
+.fc-hero-side{flex:1;padding:18px 16px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.fc-hero-side.fh-j{background:linear-gradient(135deg,rgba(91,156,246,.14),rgba(91,156,246,.03));}
+.fc-hero-side.fh-p{background:linear-gradient(135deg,rgba(251,146,60,.03),rgba(251,146,60,.14));}
+.fc-hero-team{font-size:9px;font-weight:700;letter-spacing:2px;}
+.fc-hero-team.j{color:var(--j);}
+.fc-hero-team.p{color:var(--p);}
+.fc-hero-pct{font-size:clamp(32px,4vw,46px);font-weight:900;letter-spacing:-1.5px;line-height:1;}
+.fc-hero-pct.j{color:var(--j);}
+.fc-hero-pct.p{color:var(--p);}
+.fc-hero-sub{font-size:9px;color:var(--muted);font-weight:600;}
+.fc-hero-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 12px;gap:6px;}
+.fc-hero-vs{font-size:16px;font-weight:900;color:rgba(255,255,255,.1);}
+.fc-hero-winner{font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:99px;}
+.fc-hero-winner.j{background:rgba(91,156,246,.15);color:var(--j);border:1px solid rgba(91,156,246,.3);}
+.fc-hero-winner.p{background:rgba(251,146,60,.15);color:var(--p);border:1px solid rgba(251,146,60,.3);}
+.fc-hero-winner.tie{background:rgba(255,255,255,.07);color:var(--muted);border:1px solid var(--bd2);}
+
+/* 듀얼 바 */
+.fc-dual-bar-row{display:flex;justify-content:space-between;font-size:10px;font-weight:700;margin-bottom:5px;}
+.fc-dual-bar{height:7px;background:rgba(255,255,255,.05);border-radius:99px;overflow:hidden;display:flex;margin-bottom:14px;border:1px solid var(--bd);}
+.fc-dual-j{height:100%;background:linear-gradient(90deg,var(--j2),var(--j));transition:width 1.2s cubic-bezier(.34,1.1,.64,1);}
+.fc-dual-p{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));transition:width 1.2s cubic-bezier(.34,1.1,.64,1);}
+
+/* 모델 4칸 그리드 */
+.forecast-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+@media(max-width:720px){.forecast-grid{grid-template-columns:repeat(2,1fr);}}
+.fc-card{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:13px 14px;position:relative;overflow:hidden;}
+.fc-card-shine{position:absolute;inset:0;pointer-events:none;border-radius:12px;}
+.fc-card.shine-j .fc-card-shine{background:linear-gradient(135deg,rgba(91,156,246,.06),transparent 60%);}
+.fc-card.shine-p .fc-card-shine{background:linear-gradient(135deg,rgba(251,146,60,.06),transparent 60%);}
+.fc-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.fc-label{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.fc-badge{font-size:8px;font-weight:700;padding:1px 7px;border-radius:99px;letter-spacing:.4px;}
+.fc-badge.nb {background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.25);}
+.fc-badge.bayes{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25);}
+.fc-badge.ewma{background:rgba(16,185,129,.12);color:var(--win);border:1px solid rgba(16,185,129,.25);}
+.fc-badge.mr{background:rgba(251,191,36,.12);color:var(--gold);border:1px solid rgba(251,191,36,.25);}
+.fc-pcts{display:flex;align-items:baseline;gap:6px;margin-bottom:5px;}
 .fc-value{font-size:20px;font-weight:900;letter-spacing:-.5px;}
 .fc-value.j{color:var(--j);}
 .fc-value.p{color:var(--p);}
 .fc-value.gold{color:var(--gold);}
 .fc-value.win{color:var(--win);}
-.fc-sub{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5;}
-.fc-bar{height:3px;background:rgba(255,255,255,.06);border-radius:99px;margin-top:10px;overflow:hidden;}
-.fc-bar-fill{height:100%;border-radius:99px;}
+.fc-value-p-small{font-size:13px;font-weight:700;color:var(--muted);}
+.fc-sub{font-size:9px;color:var(--muted);line-height:1.55;}
+.fc-bar{height:3px;background:rgba(255,255,255,.06);border-radius:99px;margin-top:8px;overflow:hidden;display:flex;}
+.fc-bar-fill{height:100%;border-radius:99px;transition:width 1s ease;}
 .fc-bar-fill.j{background:linear-gradient(90deg,var(--j2),var(--j));}
-.fc-bar-fill.p{background:linear-gradient(90deg,var(--p2),var(--p));}
-.forecast-note{font-size:10px;color:var(--muted);margin-top:10px;line-height:1.7;padding:8px 12px;background:rgba(255,255,255,.025);border-radius:8px;border-left:2px solid rgba(91,156,246,.3);}
-@media(max-width:720px){.forecast-grid{grid-template-columns:repeat(2,1fr);}}
+.fc-bar-fill.p{background:linear-gradient(90deg,var(--p),var(--p2));}
+
+/* 종료일 타임라인 */
+.fc-timeline{margin-bottom:12px;}
+.fc-tl-title{font-size:10px;font-weight:700;color:var(--sub);margin-bottom:8px;}
+.fc-tl-rows{display:flex;flex-direction:column;gap:5px;}
+.fc-tl-row{display:flex;align-items:center;gap:8px;}
+.fc-tl-label{font-size:9px;font-family:monospace;color:var(--muted);width:52px;flex-shrink:0;text-align:right;}
+.fc-tl-outer{flex:1;height:14px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden;}
+.fc-tl-fill{height:100%;border-radius:5px;transition:width .8s ease;}
+.fc-tl-pct{font-size:9px;font-weight:700;width:32px;flex-shrink:0;font-family:monospace;}
+
+/* 요약 노트 */
+.forecast-note{font-size:10px;color:var(--muted);margin-top:10px;line-height:1.75;padding:10px 14px;background:rgba(255,255,255,.022);border-radius:10px;border-left:2px solid rgba(91,156,246,.35);}
+.forecast-note b{color:var(--sub);}
+.fn-j{color:var(--j);font-weight:700;}
+.fn-p{color:var(--p);font-weight:700;}
+.fn-g{color:var(--gold);font-weight:700;}
+.fn-c{color:#22d3ee;font-weight:600;}
 .weekly-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:22px 24px;margin-bottom:20px;animation:fadeUp .55s .23s ease both;}
 .week-block{margin-bottom:18px;}
 .week-block:last-child{margin-bottom:0;}
@@ -392,7 +447,45 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
       <div class="section-title"><span style="font-size:15px">🔮</span> 예측 분석</div>
       <div class="section-meta" id="forecast-meta"></div>
     </div>
+    <!-- 우승 확률 히어로 -->
+    <div class="fc-hero">
+      <div class="fc-hero-side fh-j">
+        <div class="fc-hero-team j">J TEAM</div>
+        <div class="fc-hero-pct j" id="fc-j-pct">—</div>
+        <div class="fc-hero-sub" id="fc-j-sub">—</div>
+      </div>
+      <div class="fc-hero-mid">
+        <div class="fc-hero-vs">VS</div>
+        <div class="fc-hero-winner" id="fc-winner-chip">—</div>
+        <div style="font-size:8px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.5;" id="fc-mid-info">—</div>
+      </div>
+      <div class="fc-hero-side fh-p">
+        <div class="fc-hero-team p">P TEAM</div>
+        <div class="fc-hero-pct p" id="fc-p-pct">—</div>
+        <div class="fc-hero-sub" id="fc-p-sub">—</div>
+      </div>
+    </div>
+    <!-- 듀얼 바 -->
+    <div class="fc-dual-bar-row">
+      <span id="fc-db-j" style="color:var(--j)">J팀 —%</span>
+      <span id="fc-db-p" style="color:var(--p)">P팀 —%</span>
+    </div>
+    <div class="fc-dual-bar">
+      <div class="fc-dual-j" id="fc-dual-j" style="width:50%"></div>
+      <div class="fc-dual-p" id="fc-dual-p" style="width:50%"></div>
+    </div>
+    <!-- 모델별 4칸 -->
     <div class="forecast-grid" id="forecast-grid"></div>
+    <!-- 종료일 분포 -->
+    <div class="fc-timeline" id="fc-timeline" style="display:none">
+      <div class="fc-tl-title">📊 종료 시점 확률 분포 (MC 10,000회)</div>
+      <div class="fc-tl-rows" id="fc-tl-rows"></div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--muted);">
+        중앙값: <b id="fc-median" style="color:var(--gold);font-family:monospace">—</b>
+        &nbsp;·&nbsp; 최빈값: <b id="fc-mode" style="color:#22d3ee;font-family:monospace">—</b>
+        &nbsp;·&nbsp; 90% 이내: <b id="fc-p90" style="color:#a78bfa;font-family:monospace">—</b>
+      </div>
+    </div>
     <div class="forecast-note" id="forecast-note"></div>
   </div>
 
@@ -903,103 +996,248 @@ function render({dateHeaders, jTeam, pTeam}){
     document.getElementById('mini-p-car').style.right=Math.max(4,4+(pP/100)*(pTW-32))+'px';
   },400);
 
-  // ── 고도화 예측 분석 ──
+  // ══════════════════════════════════════════════
+  // Race-to-15 앙상블 예측 모델
+  // ① 음이항분포(NB)  — "먼저 15승" 확률의 정확한 해석적 해
+  // ② 베이즈 Beta     — 불확실성 정량화, 소수 데이터 강건
+  // ③ EWMA 모멘텀     — 흐름(연승) 반영
+  // ④ 평균회귀 보정   — 이기면 방심·지면 분발 인간 경향
+  // ⑤ NB 앙상블 재대입 — 앙상블 승률을 NB에 넣어 최종 우승확률
+  // ⑥ 몬테카를로 10,000회 — 종료일 분포
+  // ══════════════════════════════════════════════
   (function renderForecast(){
-    const fGrid=document.getElementById('forecast-grid');
-    const fNote=document.getElementById('forecast-note');
-    const fMeta=document.getElementById('forecast-meta');
+    const fGrid = document.getElementById('forecast-grid');
+    const fNote = document.getElementById('forecast-note');
+    const fMeta = document.getElementById('forecast-meta');
     if(!fGrid) return;
 
     if(played < 2){
       fGrid.innerHTML='';
-      fNote.textContent='진행 데이터가 부족합니다. 2일 이상 경과 후 예측이 표시됩니다.';
+      if(fNote) fNote.textContent='2일 이상 진행 후 예측이 표시됩니다.';
       return;
     }
 
-    // ① 기본 승률
-    const jRate = jWins/played;
-    const pRate = pWins/played;
+    // ── 공통 유틸 ──
+    const clamp = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
+    const mean  = arr => arr.reduce((a,b)=>a+b,0)/arr.length;
 
-    // ② 최근 3경기 가중 승률 (최근일수록 2배 가중)
-    const recent = playedDates.slice(-Math.min(3,played));
-    let jRecW=0, pRecW=0, wSum=0;
-    recent.forEach((d,i)=>{
-      const w=i+1; wSum+=w;
-      if(dayResults[d].winner==='j') jRecW+=w; else pRecW+=w;
-    });
-    const jRecentRate = jRecW/wSum;
-    const pRecentRate = pRecW/wSum;
+    // 승패 시퀀스 (날짜순, 'J'|'P')
+    const seq = playedDates.map(d => dayResults[d].winner === 'j' ? 'J' : 'P');
 
-    // ③ 점수 트렌드 (최근 3일 평균 vs 전체 평균)
-    const jAllScores = playedDates.map(d=>dayResults[d].j);
-    const pAllScores = playedDates.map(d=>dayResults[d].p);
-    const jRecentScores = jAllScores.slice(-3);
-    const pRecentScores = pAllScores.slice(-3);
-    const jScoreTrend = (jRecentScores.reduce((a,b)=>a+b,0)/jRecentScores.length) - (jAllScores.reduce((a,b)=>a+b,0)/jAllScores.length);
-    const pScoreTrend = (pRecentScores.reduce((a,b)=>a+b,0)/pRecentScores.length) - (pAllScores.reduce((a,b)=>a+b,0)/pAllScores.length);
+    // ── ① 음이항분포: Race-to-TARGET 정확 해 ──
+    // P(J우승 | jNeed번 더 이겨야, pNeed번 더 이겨야, 경기당 J승률 p)
+    // = Σ_{k=0}^{pNeed-1} C(jNeed+k-1, k) · p^jNeed · (1-p)^k
+    function logGamma(n){
+      if(n<=1) return 0;
+      if(n<12){let v=0;for(let i=1;i<n;i++)v+=Math.log(i);return v;}
+      return (n-.5)*Math.log(n)-n+.5*Math.log(2*Math.PI)+1/(12*n)-1/(360*n*n*n);
+    }
+    function logComb(n,k){
+      if(k<0||k>n) return -Infinity;
+      return logGamma(n+1)-logGamma(k+1)-logGamma(n-k+1);
+    }
+    function raceWinProb(jW, pW, p){
+      const jN = TARGET-jW, pN = TARGET-pW;
+      if(jN<=0) return 1; if(pN<=0) return 0;
+      p = clamp(p, 0.01, 0.99);
+      let prob=0;
+      for(let k=0;k<pN;k++){
+        const lc = logComb(jN+k-1, k);
+        prob += Math.exp(lc + jN*Math.log(p) + k*Math.log(1-p));
+      }
+      return clamp(prob, 0, 1);
+    }
 
-    // ④ 종합 예측 승률: 전체 50% + 최근 50% + 트렌드 보정
-    let jPred = jRate*0.5 + jRecentRate*0.5;
-    let pPred = pRate*0.5 + pRecentRate*0.5;
-    // 트렌드 보정: 점수 차이 기준 ±5% 이내
-    const trendBonus = Math.min(0.05, Math.abs(jScoreTrend - pScoreTrend)/20);
-    if(jScoreTrend > pScoreTrend) jPred = Math.min(0.95, jPred+trendBonus);
-    else pPred = Math.min(0.95, pPred+trendBonus);
-    // 합계 1로 정규화
-    const total = jPred+pPred;
-    jPred /= total; pPred /= total;
+    // ── ② 베이즈 Beta 사후 추정 ──
+    // 사전분포 Beta(1,1) → 관측 후 Beta(1+jWins, 1+pWins)
+    const bAlpha = 1 + jWins;
+    const bBeta  = 1 + pWins;
+    const bayesMean = bAlpha / (bAlpha + bBeta);
+    // 95% CI
+    const bStd = Math.sqrt(bAlpha*bBeta / ((bAlpha+bBeta)**2 * (bAlpha+bBeta+1)));
+    const bayesLo = clamp(bayesMean - 1.96*bStd, 0, 1);
+    const bayesHi = clamp(bayesMean + 1.96*bStd, 0, 1);
+    const pBayes = raceWinProb(jWins, pWins, bayesMean);
 
-    // ⑤ 예상 종료일 계산: 각팀 남은 승수 / 예측 승률 → 필요 남은 경기수
-    const HOLIDAYS = ['03월 02일']; // 대체공휴일
-    const allFutureDates = WEEK_SCHEDULE.flatMap(w=>w.dates).filter(d=>!dayResults[d]&&!HOLIDAYS.includes(d));
-    const jNeed = TARGET - jWins;
-    const pNeed = TARGET - pWins;
-    // 각팀이 남은 경기에서 필요 승수 달성하는 시뮬: E[경기수] = need/rate
-    const jDaysNeeded = Math.ceil(jNeed / jPred);
-    const pDaysNeeded = Math.ceil(pNeed / pPred);
-    const winnerDays = Math.min(jDaysNeeded, pDaysNeeded);
-    const predictedEndDate = allFutureDates[Math.min(winnerDays-1, allFutureDates.length-1)];
-    const predictedWinner = jDaysNeeded <= pDaysNeeded ? 'J' : 'P';
-    const predictedEndStr = predictedEndDate ? shortD(predictedEndDate) : '기간 내';
+    // ── ③ EWMA 모멘텀 (α=0.30) ──
+    // 오래된 경기일수록 (1-α)^t 로 자연 감쇠
+    const ALPHA = 0.30;
+    let ewma = seq[0]==='J' ? 1 : 0;
+    for(let i=1;i<seq.length;i++){
+      ewma = ALPHA*(seq[i]==='J'?1:0) + (1-ALPHA)*ewma;
+    }
+    const ewmaRate = ewma; // J팀 EWMA 승률
+    const pEWMA = raceWinProb(jWins, pWins, ewmaRate);
 
-    // ⑥ 점수 변동성 (표준편차 기반 불확실성)
-    const jStd = Math.sqrt(jAllScores.reduce((a,v)=>a+Math.pow(v-(jAllScores.reduce((s,x)=>s+x,0)/jAllScores.length),2),0)/jAllScores.length);
-    const pStd = Math.sqrt(pAllScores.reduce((a,v)=>a+Math.pow(v-(pAllScores.reduce((s,x)=>s+x,0)/pAllScores.length),2),0)/pAllScores.length);
-    const uncertainty = ((jStd+pStd)/2) > 2 ? '높음' : ((jStd+pStd)/2) > 1 ? '보통' : '낮음';
+    // ── ④ 평균회귀 보정 ──
+    // 히스토리에서 "2연속 동일팀 → 다음 반전" 빈도를 측정해 λ(회귀강도) 추정
+    // λ가 높을수록 평균 쪽으로 당겨짐
+    let streakFlip=0, streakTotal=0;
+    for(let i=2;i<seq.length;i++){
+      if(seq[i-2]===seq[i-1]){
+        streakTotal++;
+        if(seq[i]!==seq[i-1]) streakFlip++;
+      }
+    }
+    // 반전빈도가 0.5 초과 → 평균회귀 있음 / 미만 → 모멘텀 있음
+    // λ = 반전빈도 (데이터 부족 시 0.4 기본값)
+    const lambda = streakTotal >= 4 ? clamp(streakFlip/streakTotal, 0.05, 0.95) : 0.40;
+    // 평균회귀율: EWMA와 베이즈 사후를 λ 비율로 블렌드
+    const mrRate = (1-lambda)*ewmaRate + lambda*bayesMean;
+    const pMR = raceWinProb(jWins, pWins, mrRate);
 
-    fMeta.textContent=`${played}일 데이터 기반`;
+    // ── ⑤ 앙상블 ──
+    // 가중치: NB기반 원시율 35%, 베이즈 25%, EWMA 25%, 평균회귀 15%
+    const rawRate = jWins/played;
+    const W = { nb:0.35, bayes:0.25, ewma:0.25, mr:0.15 };
+    const ensRate = rawRate*W.nb + bayesMean*W.bayes + ewmaRate*W.ewma + mrRate*W.mr;
+    const finalJ  = raceWinProb(jWins, pWins, ensRate);
+    const finalP  = 1 - finalJ;
 
-    fGrid.innerHTML=`
-      <div class="fc-card">
-        <div class="fc-label">J팀 종합 예측 승률</div>
-        <div class="fc-value j">${Math.round(jPred*100)}%</div>
-        <div class="fc-sub">전체 ${Math.round(jRate*100)}% · 최근 ${Math.round(jRecentRate*100)}%<br>점수 트렌드 ${jScoreTrend>=0?'▲':'▼'}${Math.abs(jScoreTrend).toFixed(2)}</div>
-        <div class="fc-bar"><div class="fc-bar-fill j" style="width:${Math.round(jPred*100)}%"></div></div>
-      </div>
-      <div class="fc-card">
-        <div class="fc-label">P팀 종합 예측 승률</div>
-        <div class="fc-value p">${Math.round(pPred*100)}%</div>
-        <div class="fc-sub">전체 ${Math.round(pRate*100)}% · 최근 ${Math.round(pRecentRate*100)}%<br>점수 트렌드 ${pScoreTrend>=0?'▲':'▼'}${Math.abs(pScoreTrend).toFixed(2)}</div>
-        <div class="fc-bar"><div class="fc-bar-fill p" style="width:${Math.round(pPred*100)}%"></div></div>
-      </div>
-      <div class="fc-card">
-        <div class="fc-label">예상 종료일</div>
-        <div class="fc-value gold">${predictedEndStr}</div>
-        <div class="fc-sub">${predictedWinner}팀 먼저 15승 예상<br>남은 경기 ${allFutureDates.length}일</div>
-      </div>
-      <div class="fc-card">
-        <div class="fc-label">예측 불확실성</div>
-        <div class="fc-value ${uncertainty==='낮음'?'win':'gold'}">${uncertainty}</div>
-        <div class="fc-sub">점수 변동폭 기준<br>J±${jStd.toFixed(1)} / P±${pStd.toFixed(1)}</div>
-      </div>
+    // ── ⑥ 몬테카를로 10,000회 종료일 분포 ──
+    const HOLIDAYS_FC = ['03월 02일'];
+    const futureDates = WEEK_SCHEDULE.flatMap(w=>w.dates)
+      .filter(d => !dayResults[d] && !HOLIDAYS_FC.includes(d));
+    const remGames = futureDates.length;
+    const MC_N = 10000;
+    const endDist = {};
+    let mcJWins = 0;
+    for(let s=0;s<MC_N;s++){
+      let jA=jWins, pA=pWins, endG=remGames;
+      for(let g=1;g<=remGames;g++){
+        if(Math.random()<ensRate) jA++; else pA++;
+        if(jA>=TARGET){ endG=g; mcJWins++; break; }
+        if(pA>=TARGET){ endG=g; break; }
+      }
+      endDist[endG] = (endDist[endG]||0)+1;
+    }
+    const mcJProb = mcJWins/MC_N;
+    // 중앙값·최빈값·P90
+    const sortedG = Object.keys(endDist).map(Number).sort((a,b)=>a-b);
+    let cum=0, medianG=sortedG[0], modeG=sortedG[0], p90G=sortedG[sortedG.length-1];
+    let modeCount=0;
+    for(const g of sortedG){
+      cum+=endDist[g];
+      if(endDist[g]>modeCount){modeCount=endDist[g];modeG=g;}
+      if(cum>=MC_N*.5 && medianG===sortedG[0] && cum>endDist[sortedG[0]]) medianG=g;
+      if(cum>=MC_N*.9 && p90G===sortedG[sortedG.length-1]){ p90G=g; }
+    }
+    // 더 정확한 중앙값
+    cum=0;
+    for(const g of sortedG){ cum+=endDist[g]; if(cum>=MC_N*.5){medianG=g;break;} }
+    cum=0;
+    for(const g of sortedG){ cum+=endDist[g]; if(cum>=MC_N*.9){p90G=g;break;} }
+
+    const medianDate = futureDates[Math.min(medianG-1, futureDates.length-1)];
+    const modeDate   = futureDates[Math.min(modeG-1,   futureDates.length-1)];
+
+    // ── UI 업데이트 ──
+    fMeta.textContent = `${played}일 데이터 · 4모델 앙상블`;
+
+    // 히어로
+    document.getElementById('fc-j-pct').textContent = (finalJ*100).toFixed(1)+'%';
+    document.getElementById('fc-p-pct').textContent = (finalP*100).toFixed(1)+'%';
+    document.getElementById('fc-j-sub').textContent = `MC검증 ${(mcJProb*100).toFixed(1)}%`;
+    document.getElementById('fc-p-sub').textContent = `MC검증 ${((1-mcJProb)*100).toFixed(1)}%`;
+    const chip = document.getElementById('fc-winner-chip');
+    if(Math.abs(finalJ-finalP)<0.04){
+      chip.textContent='초접전'; chip.className='fc-hero-winner tie';
+    } else if(finalJ>finalP){
+      chip.textContent='J팀 유리'; chip.className='fc-hero-winner j';
+    } else {
+      chip.textContent='P팀 유리'; chip.className='fc-hero-winner p';
+    }
+    document.getElementById('fc-mid-info').innerHTML =
+      `남은 ${remGames}경기<br>λ=${lambda.toFixed(2)}`;
+
+    // 듀얼바
+    document.getElementById('fc-dual-j').style.width = (finalJ*100).toFixed(1)+'%';
+    document.getElementById('fc-dual-p').style.width = (finalP*100).toFixed(1)+'%';
+    document.getElementById('fc-db-j').textContent = `J팀 ${(finalJ*100).toFixed(1)}%`;
+    document.getElementById('fc-db-p').textContent = `P팀 ${(finalP*100).toFixed(1)}%`;
+
+    // 모델 4칸
+    const cards = [
+      {
+        label:'음이항분포', badge:'NB', cls:'nb', jProb: raceWinProb(jWins, pWins, rawRate),
+        sub: `원시율 ${(rawRate*100).toFixed(0)}% 기반<br>Race-to-${TARGET} 정확 해`
+      },
+      {
+        label:'베이즈 Beta', badge:'BAYES', cls:'bayes', jProb: pBayes,
+        sub: `사후 E[p]=${(bayesMean*100).toFixed(1)}%<br>95%CI [${(bayesLo*100).toFixed(0)}~${(bayesHi*100).toFixed(0)}%]`
+      },
+      {
+        label:'EWMA 모멘텀', badge:'EWMA', cls:'ewma', jProb: pEWMA,
+        sub: `α=0.30 지수감쇠<br>최근흐름 J ${(ewmaRate*100).toFixed(1)}%`
+      },
+      {
+        label:'평균회귀 보정', badge:'MR', cls:'mr', jProb: pMR,
+        sub: `반전강도 λ=${lambda.toFixed(2)}<br>EWMA↔베이즈 블렌드`
+      }
+    ];
+    fGrid.innerHTML = cards.map(c => {
+      const jp = (c.jProb*100).toFixed(1);
+      const pp = ((1-c.jProb)*100).toFixed(1);
+      const shine = c.jProb >= 0.5 ? 'shine-j' : 'shine-p';
+      return `<div class="fc-card ${shine}">
+        <div class="fc-card-shine"></div>
+        <div class="fc-card-top">
+          <span class="fc-label">${c.label}</span>
+          <span class="fc-badge ${c.cls}">${c.badge}</span>
+        </div>
+        <div class="fc-pcts">
+          <span class="fc-value j">${jp}%</span>
+          <span class="fc-value-p-small">${pp}%P</span>
+        </div>
+        <div class="fc-bar">
+          <div class="fc-bar-fill j" style="width:${jp}%"></div>
+          <div class="fc-bar-fill p" style="width:${pp}%"></div>
+        </div>
+        <div class="fc-sub" style="margin-top:6px">${c.sub}</div>
+      </div>`;
+    }).join('');
+
+    // 종료일 타임라인
+    const tlWrap = document.getElementById('fc-timeline');
+    const tlRows = document.getElementById('fc-tl-rows');
+    if(tlWrap && tlRows && remGames > 0){
+      tlWrap.style.display='block';
+      const topG = sortedG.slice(0, 12);
+      const maxC = Math.max(...topG.map(g=>endDist[g]));
+      tlRows.innerHTML = topG.map(g=>{
+        const date = futureDates[Math.min(g-1, futureDates.length-1)];
+        const pct  = (endDist[g]/MC_N*100).toFixed(1);
+        const barW = (endDist[g]/maxC*100).toFixed(1);
+        const isMed = g===medianG, isMod = g===modeG;
+        const col = isMed ? 'var(--gold)' : isMod ? '#22d3ee' : 'var(--j)';
+        return `<div class="fc-tl-row">
+          <div class="fc-tl-label">${date?shortD(date):'+'+g+'번'}</div>
+          <div class="fc-tl-outer">
+            <div class="fc-tl-fill" style="width:${barW}%;background:${col};opacity:.8;"></div>
+          </div>
+          <div class="fc-tl-pct" style="color:${col}">${pct}%${isMed?' ◆':isMod?' ●':''}</div>
+        </div>`;
+      }).join('');
+      document.getElementById('fc-median').textContent = medianDate ? shortD(medianDate) : `+${medianG}번째`;
+      document.getElementById('fc-mode').textContent   = modeDate   ? shortD(modeDate)   : `+${modeG}번째`;
+      document.getElementById('fc-p90').textContent    = `+${p90G}번째`;
+    }
+
+    // 요약 노트
+    const momentumDesc = Math.abs(ewmaRate - rawRate) < 0.05 ? '흐름 균형'
+      : ewmaRate > rawRate ? `<span class="fn-j">J팀 모멘텀 ▲</span> (EWMA ${(ewmaRate*100).toFixed(0)}% > 전체 ${(rawRate*100).toFixed(0)}%)`
+      : `<span class="fn-p">P팀 모멘텀 ▲</span> (EWMA ${((1-ewmaRate)*100).toFixed(0)}% > 전체 ${((1-rawRate)*100).toFixed(0)}%)`;
+    const mrDesc = lambda > 0.55
+      ? `<span class="fn-g">평균회귀 강함(λ=${lambda.toFixed(2)})</span> — 연승 후 반전 잦은 패턴`
+      : lambda < 0.35
+      ? `<span class="fn-c">모멘텀 우세(λ=${lambda.toFixed(2)})</span> — 흐름이 지속되는 패턴`
+      : `<span class="fn-g">모멘텀·회귀 균형(λ=${lambda.toFixed(2)})</span>`;
+    fNote.innerHTML = `
+      ${momentumDesc} · ${mrDesc}<br>
+      앙상블(NB ${(W.nb*100).toFixed(0)}%·베이즈 ${(W.bayes*100).toFixed(0)}%·EWMA ${(W.ewma*100).toFixed(0)}%·MR ${(W.mr*100).toFixed(0)}%) →
+      <b>J팀 최종 우승확률 <span class="fn-j">${(finalJ*100).toFixed(1)}%</span>
+      · MC검증 <span class="fn-j">${(mcJProb*100).toFixed(1)}%</span></b>
     `;
-
-    const trendDesc = jScoreTrend > pScoreTrend
-      ? `J팀이 최근 상승세(+${jScoreTrend.toFixed(2)}) · P팀 대비 좋은 흐름`
-      : pScoreTrend > jScoreTrend
-      ? `P팀이 최근 상승세(+${pScoreTrend.toFixed(2)}) · J팀 대비 좋은 흐름`
-      : '양팀 트렌드 비슷';
-    fNote.innerHTML=`📈 ${trendDesc} · 예측 신뢰도 <b>${uncertainty==='낮음'?'양호':'보통'}</b>`;
   })();
 
   // Weekly
