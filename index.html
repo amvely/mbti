@@ -138,7 +138,32 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 .mom-f-fill.j{background:var(--j);}
 .mom-f-fill.p{background:var(--p);}
 .mom-f-fill.tie{background:var(--muted);}
-/* MVP 배지 */
+/* 기타매체 카드 */
+.om-card{background:var(--bg3);border:1px solid rgba(167,139,250,.25);border-radius:12px;padding:10px 8px;text-align:center;position:relative;overflow:hidden;}
+.om-card.j-win{background:linear-gradient(160deg,rgba(91,156,246,.10),var(--bg3));border-color:rgba(91,156,246,.3);}
+.om-card.p-win{background:linear-gradient(160deg,rgba(251,146,60,.10),var(--bg3));border-color:rgba(251,146,60,.3);}
+.om-card.upcoming{opacity:.3;}
+.om-label{font-size:9px;font-weight:700;letter-spacing:.5px;color:rgba(167,139,250,.8);margin-bottom:5px;}
+.om-winner{font-size:12px;font-weight:900;}
+.om-card.j-win .om-winner{color:var(--j);}
+.om-card.p-win .om-winner{color:var(--p);}
+.om-card.upcoming .om-winner{color:var(--muted);}
+/* 주차 행 레이아웃: 요일카드 + 기타매체 카드 */
+.week-days-wrap{display:flex;gap:8px;align-items:stretch;}
+.week-days-main{display:grid;gap:8px;flex:1;}
+.week-days-side{display:flex;flex-direction:column;justify-content:stretch;width:68px;flex-shrink:0;}
+.om-side-card{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);border:1px solid rgba(167,139,250,.2);border-radius:12px;padding:6px 4px;text-align:center;gap:4px;}
+.om-side-lbl{font-size:8px;font-weight:700;letter-spacing:.5px;color:rgba(167,139,250,.7);}
+.om-side-winner{font-size:14px;font-weight:900;}
+.om-side-card.j-win{background:linear-gradient(160deg,rgba(91,156,246,.10),var(--bg3));border-color:rgba(91,156,246,.35);}
+.om-side-card.j-win .om-side-winner{color:var(--j);}
+.om-side-card.p-win{background:linear-gradient(160deg,rgba(251,146,60,.10),var(--bg3));border-color:rgba(251,146,60,.35);}
+.om-side-card.p-win .om-side-winner{color:var(--p);}
+.om-side-card.upcoming{opacity:.35;}
+.om-side-card.upcoming .om-side-winner{color:var(--muted);}
+/* 날짜 td — 기타매체 열 */
+td.om-td{background:rgba(167,139,250,.04);border-left:1px solid rgba(167,139,250,.1);z-index:1;width:52px;min-width:52px;padding:10px 4px;}
+th.om-th{background:rgba(167,139,250,.09);color:rgba(180,155,255,.85);border-left:1px solid rgba(167,139,250,.15);width:52px;min-width:52px;padding:12px 4px;}
 .mvp-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--gold);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:99px;padding:3px 10px;margin-top:5px;}
 /* day-card MVP 강조 */
 .day-mvp{font-size:10px;font-weight:700;color:var(--gold);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:3px;}
@@ -337,7 +362,8 @@ thead th:nth-child(2){position:sticky;left:108px;background:var(--bg3);z-index:1
 thead th:nth-child(3){position:sticky;left:161px;background:var(--bg3);z-index:10;width:55px;}
 thead th:nth-child(4){position:sticky;left:224px;background:var(--bg3);z-index:10;width:60px;}
 thead th:nth-child(5){position:sticky;left:292px;background:var(--bg3);z-index:10;width:50px;}
-thead th:nth-child(6){position:sticky;left:350px;background:var(--bg3);z-index:10;width:80px;box-shadow:3px 0 8px rgba(0,0,0,.6),2px 0 0 rgba(255,255,255,.10);}
+thead th:nth-child(6){position:sticky;left:350px;background:var(--bg3);z-index:10;width:80px;}
+thead th:nth-child(7){position:sticky;left:438px;background:var(--bg3);z-index:10;width:62px;box-shadow:3px 0 8px rgba(0,0,0,.6),2px 0 0 rgba(255,255,255,.10);}
 
 tbody tr{transition:background .15s;}
 tbody tr:hover{background:rgba(255,255,255,.025);}
@@ -349,7 +375,8 @@ td:nth-child(2){position:sticky;left:108px;background:var(--bg2);z-index:7;width
 td:nth-child(3){position:sticky;left:161px;background:var(--bg2);z-index:7;width:55px;}
 td:nth-child(4){position:sticky;left:224px;background:var(--bg2);z-index:7;width:60px;}
 td:nth-child(5){position:sticky;left:292px;background:var(--bg2);z-index:7;width:50px;}
-td:nth-child(6){position:sticky;left:350px;background:var(--bg2);z-index:7;width:80px;box-shadow:3px 0 8px rgba(0,0,0,.6),2px 0 0 rgba(255,255,255,.08);}
+td:nth-child(6){position:sticky;left:350px;background:var(--bg2);z-index:7;width:80px;}
+td:nth-child(7){position:sticky;left:438px;background:var(--bg2);z-index:7;width:62px;box-shadow:3px 0 8px rgba(0,0,0,.6),2px 0 0 rgba(255,255,255,.08);}
 
 /* 날짜 td */
 td.date-td{background:rgba(91,156,246,.03);z-index:1;width:52px;min-width:52px;padding:10px 4px;}
@@ -563,7 +590,7 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
 
 <script>
 /* ══════ CONFIG ══════ */
-const CSV_URL     = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwLn1ITezcGkfgKkd_B9_MwrTbllcubuHp1FpPjoucTMc7j0P4Ek6XBfvmYn_eHrhFc2-6KtuTOBR9/pub?gid=0&single=true&output=csv';
+const CSV_URL     = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQwLn1ITezcGkfgKkd_B9_MwrTbllcubuHp1FpPjoucTMc7j0P4Ek6XBfvmYn_eHrhFc2-6KtuTOBR9/pub?output=csv';
 const TARGET      = 15;
 const TOTAL_WD    = 27;
 const INTERN_RANK = '인턴';
@@ -602,6 +629,8 @@ const shortD = d => d.replace(/0?(\d+)월\s*0?(\d+)일/,(_,m,day)=>String(m).pad
 function parseData(rows) {
   let section=null, dateHeaders=[];
   const jTeam=[], pTeam=[];
+  const weeklyOtherMedia = {}; // {'1주차': 'j'|'p'|null, ...}
+  const otherMediaScores = {}; // {name: [score, ...]} — 날짜 순
 
   for(const row of rows){
     const c=row.map(s=>(s||'').trim());
@@ -609,6 +638,39 @@ function parseData(rows) {
     if(c[1]==='P팀'&&c[3]==='평균'){section='pScore';continue;}
     if(c[1]==='J팀'&&c[2]==='이관매출'&&isDate(c[3])){section='jTransfer';continue;}
     if(c[1]==='P팀'&&c[2]==='이관매출'&&isDate(c[3])){section='pTransfer';continue;}
+
+    // 주차별 기타매체: A열='기타매체' → 섹션 진입, 이후 A열='1주차'~'5주차', B열=승리팀(J/P/j/p)
+    if(c[0]==='기타매체'&&c[1]==='승'){
+      section='weeklyOther'; continue;
+    }
+    if(section==='weeklyOther'){
+      const wLabel = c[0]; // '1주차','2주차',...
+      if(wLabel && wLabel.includes('주차')){
+        const raw = (c[1]||'').toLowerCase();
+        const w = raw==='j'||raw.includes('j팀') ? 'j' : raw==='p'||raw.includes('p팀') ? 'p' : null;
+        weeklyOtherMedia[wLabel] = w;
+        continue;
+      }
+      // 빈 행이 나오면 섹션 종료
+      if(!wLabel) { section=null; continue; }
+    }
+
+    // 개인 기타매체 점수: B열 이름 + 이후 날짜별 점수 (P59, P72 행 구조 대응)
+    // 섹션 헤더: A열 '기타매체' or B열 '기타매체'
+    if(c[0]==='기타매체'||c[0]==='기타 매체'||(c[1]==='기타매체'&&c[2]==='점수')){
+      section='otherMedia'; continue;
+    }
+    if(section==='otherMedia'){
+      const name=c[1];
+      if(!name||name==='일평균') continue;
+      if(name==='J팀'||name==='P팀'){continue;} // 구분 헤더 스킵
+      otherMediaScores[name]=dateHeaders.map((_,i)=>{
+        const r=(row[4+i]||row[2+i]||'').trim();
+        return r===''?null:toNum(r);
+      });
+      continue;
+    }
+
     if(!c[0]||!c[1]||c[1]==='일평균')continue;
 
     const rank=c[0], name=c[1];
@@ -627,7 +689,13 @@ function parseData(rows) {
       if(m){m.transfer=toNum(c[2]);m.dailyTransfer=dateHeaders.map((_,i)=>toNum((row[3+i]||'').trim()));}
     }
   }
-  return {dateHeaders,jTeam,pTeam};
+
+  // 개인 기타매체 점수를 각 멤버에 붙이기
+  [...jTeam,...pTeam].forEach(m=>{
+    m.otherMedia = otherMediaScores[m.name] || new Array(dateHeaders.length).fill(null);
+  });
+
+  return {dateHeaders,jTeam,pTeam,weeklyOtherMedia};
 }
 
 /* ══════ 페이지네이션 상태 ══════ */
@@ -664,12 +732,12 @@ function renderIndividualTable(){
   const sliceOriginalIdx = sliceHeaders.map(h => _allDateHeaders.indexOf(h));
 
   let html = `<thead><tr>
-    <th>이름</th><th>팀</th><th>평균</th><th>이관매출</th><th>팀比</th><th>상대팀比</th>`;
+    <th>이름</th><th>팀</th><th>평균</th><th>이관매출</th><th>팀比</th><th>상대팀比</th><th class="om-th">기타매체</th>`;
   sliceDates.forEach(d => { html += `<th class="date-th">${d}</th>`; });
   html += `</tr></thead><tbody>`;
 
   const renderTeam = (team, myAvg, oppAvg, chip) => {
-    html += `<tr class="group-hd-row ${chip}"><td colspan="${6 + sliceDates.length}">${chip.toUpperCase()}팀 · 팀 일평균 ${myAvg}</td></tr>`;
+    html += `<tr class="group-hd-row ${chip}"><td colspan="${7 + sliceDates.length}">${chip.toUpperCase()}팀 · 팀 일평균 ${myAvg}</td></tr>`;
     const sorted = [...team].sort((a,b) => b.transfer - a.transfer);
     const topTransfer = new Set(sorted.filter(m=>!m.isIntern).slice(0,2).map(m=>m.name));
     const bottomTransfer = new Set(sorted.filter(m=>!m.isIntern).slice(-2).map(m=>m.name));
@@ -685,13 +753,21 @@ function renderIndividualTable(){
       if(exemptNames.has(m.name))      badgeHtml = '<span class="rank-badge top">면제</span>';
       else if(eduNames.has(m.name))    badgeHtml = '<span class="rank-badge bottom">교육</span>';
 
+      // 기타매체 점수 합산
+      const omScores = (m.otherMedia||[]).filter(v=>v!==null);
+      const omTotal = omScores.length ? omScores.reduce((a,b)=>a+b,0) : null;
+      const omHtml = omTotal !== null
+        ? `<span style="font-size:11px;font-weight:700;color:rgba(180,155,255,.9)">${omTotal}</span>`
+        : `<span style="color:var(--muted)">—</span>`;
+
       html += `<tr>
         <td><div class="member-name"><span class="rank-dot" style="background:${tC}"></span>${m.name}<span class="tag-position">${m.rank}</span>${badgeHtml}</div></td>
         <td><span class="team-chip ${chip}">${chip.toUpperCase()}</span></td>
         <td class="td-avg ${aT?'above-avg':'below-avg'}">${m.avg}</td>
         <td class="${m.transfer>0?'td-transfer':'td-transfer-zero'}">${m.transfer>0?(m.transfer/10000).toFixed(0)+'만':'-'}</td>
         <td class="td-diff ${tDiff>=0?'diff-positive':'diff-negative'}">${tDiff>=0?'+':''}${tDiff}</td>
-        <td><div class="comparison-cell"><span>${aO?'⭐':'💪'}</span><span style="color:${aO?'var(--win)':'var(--lose)'};font-weight:700">${oDiff>=0?'+':''}${oDiff}</span></div></td>`;
+        <td><div class="comparison-cell"><span>${aO?'⭐':'💪'}</span><span style="color:${aO?'var(--win)':'var(--lose)'};font-weight:700">${oDiff>=0?'+':''}${oDiff}</span></div></td>
+        <td class="om-td">${omHtml}</td>`;
 
       sliceOriginalIdx.forEach(origIdx => {
         const v = origIdx >= 0 ? m.scores[origIdx] : null;
@@ -721,7 +797,7 @@ function renderIndividualTable(){
 let _allDateHeaders = [];
 
 /* ══════ RENDER ══════ */
-function render({dateHeaders, jTeam, pTeam}){
+function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
   _allDateHeaders = dateHeaders;
 
   const dayAvg=(team,i)=>{const v=team.map(m=>m.scores[i]).filter(v=>v!==null);return v.length?fix2(avgArr(v)):null;};
@@ -1390,8 +1466,17 @@ function render({dateHeaders, jTeam, pTeam}){
     const sum=hasData?(wJ>wP?`<span class="week-wins-summary wws-j">J ${wJ}승 · P ${wP}승</span>`:wP>wJ?`<span class="week-wins-summary wws-p">J ${wJ}승 · P ${wP}승</span>`:`<span class="week-wins-summary wws-tie">J ${wJ}승 · P ${wP}승</span>`):`<span class="week-wins-summary wws-tie">예정</span>`;
     const block=document.createElement('div'); block.className='week-block';
     block.innerHTML=`<div class="week-label">${wk.label} &nbsp;(${shortD(wk.dates[0])}~${shortD(wk.dates[wk.dates.length-1])}) ${sum}</div>`;
-    const dDiv=document.createElement('div'); dDiv.className='week-days';
+
+    // 주차 기타매체 승리팀
+    const omWinner = (weeklyOtherMedia||{})[wk.label] || null;
+    const omCls = omWinner ? omWinner+'-win' : 'upcoming';
+    const omTxt = omWinner ? (omWinner==='j'?'J팀':'P팀') : '—';
+
+    // 날짜 카드 + 기타매체 사이드
+    const wrap = document.createElement('div'); wrap.className='week-days-wrap';
+    const dDiv=document.createElement('div'); dDiv.className='week-days-main';
     dDiv.style.gridTemplateColumns=`repeat(${wk.dates.length},1fr)`;
+
     wk.dates.forEach(d=>{
       const res=dayResults[d], isT=d===todayLabel, card=document.createElement('div');
       const isHoliday = d==='03월 02일';
@@ -1433,7 +1518,19 @@ function render({dateHeaders, jTeam, pTeam}){
       }
       dDiv.appendChild(card);
     });
-    block.appendChild(dDiv); wCont.appendChild(block);
+
+    // 기타매체 사이드 카드
+    const sDiv=document.createElement('div'); sDiv.className='week-days-side';
+    sDiv.innerHTML=`<div class="om-side-card ${omCls}">
+      <div class="om-side-lbl">기타매체</div>
+      <div class="om-side-winner">${omTxt}</div>
+      <div style="font-size:9px;color:var(--muted);margin-top:2px">${omWinner?'승리':'예정'}</div>
+    </div>`;
+
+    wrap.appendChild(dDiv);
+    wrap.appendChild(sDiv);
+    block.appendChild(wrap);
+    wCont.appendChild(block);
   });
   
 
