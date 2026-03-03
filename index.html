@@ -441,53 +441,7 @@ tbody tr:hover td.date-td{background:rgba(91,156,246,.07);}
     </div>
   </div>
 
-  <!-- 예측 분석 -->
-  <div class="forecast-wrap">
-    <div class="section-hd">
-      <div class="section-title"><span style="font-size:15px">🔮</span> 예측 분석</div>
-      <div class="section-meta" id="forecast-meta"></div>
-    </div>
-    <!-- 우승 확률 히어로 -->
-    <div class="fc-hero">
-      <div class="fc-hero-side fh-j">
-        <div class="fc-hero-team j">J TEAM</div>
-        <div class="fc-hero-pct j" id="fc-j-pct">—</div>
-        <div class="fc-hero-sub" id="fc-j-sub">—</div>
-      </div>
-      <div class="fc-hero-mid">
-        <div class="fc-hero-vs">VS</div>
-        <div class="fc-hero-winner" id="fc-winner-chip">—</div>
-        <div style="font-size:8px;color:var(--muted);margin-top:4px;text-align:center;line-height:1.5;" id="fc-mid-info">—</div>
-      </div>
-      <div class="fc-hero-side fh-p">
-        <div class="fc-hero-team p">P TEAM</div>
-        <div class="fc-hero-pct p" id="fc-p-pct">—</div>
-        <div class="fc-hero-sub" id="fc-p-sub">—</div>
-      </div>
-    </div>
-    <!-- 듀얼 바 -->
-    <div class="fc-dual-bar-row">
-      <span id="fc-db-j" style="color:var(--j)">J팀 —%</span>
-      <span id="fc-db-p" style="color:var(--p)">P팀 —%</span>
-    </div>
-    <div class="fc-dual-bar">
-      <div class="fc-dual-j" id="fc-dual-j" style="width:50%"></div>
-      <div class="fc-dual-p" id="fc-dual-p" style="width:50%"></div>
-    </div>
-    <!-- 모델별 4칸 -->
-    <div class="forecast-grid" id="forecast-grid"></div>
-    <!-- 종료일 분포 -->
-    <div class="fc-timeline" id="fc-timeline" style="display:none">
-      <div class="fc-tl-title">📊 종료 시점 확률 분포 (MC 10,000회)</div>
-      <div class="fc-tl-rows" id="fc-tl-rows"></div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--muted);">
-        중앙값: <b id="fc-median" style="color:var(--gold);font-family:monospace">—</b>
-        &nbsp;·&nbsp; 최빈값: <b id="fc-mode" style="color:#22d3ee;font-family:monospace">—</b>
-        &nbsp;·&nbsp; 90% 이내: <b id="fc-p90" style="color:#a78bfa;font-family:monospace">—</b>
-      </div>
-    </div>
-    <div class="forecast-note" id="forecast-note"></div>
-  </div>
+  
 
   <div class="weekly-wrap">
     <div class="section-hd">
