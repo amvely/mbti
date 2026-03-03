@@ -151,16 +151,24 @@ h1{font-size:clamp(28px,5vw,50px);font-weight:900;letter-spacing:-1px;line-heigh
 /* 주차 행 레이아웃: 요일카드 + 기타매체 카드 */
 .week-days-wrap{display:flex;gap:8px;align-items:stretch;}
 .week-days-main{display:grid;gap:8px;flex:1;}
-.week-days-side{display:flex;flex-direction:column;justify-content:stretch;width:68px;flex-shrink:0;}
-.om-side-card{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);border:1px solid rgba(167,139,250,.2);border-radius:12px;padding:6px 4px;text-align:center;gap:4px;}
-.om-side-lbl{font-size:8px;font-weight:700;letter-spacing:.5px;color:rgba(167,139,250,.7);}
-.om-side-winner{font-size:14px;font-weight:900;}
-.om-side-card.j-win{background:linear-gradient(160deg,rgba(91,156,246,.10),var(--bg3));border-color:rgba(91,156,246,.35);}
+.week-days-side{display:flex;flex-direction:column;justify-content:stretch;flex-shrink:0;}
+.om-side-card{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--bg3);border:1px solid rgba(167,139,250,.25);border-radius:12px;
+  padding:12px 10px 10px;text-align:center;gap:0;
+  transition:transform .18s,box-shadow .18s;cursor:default;}
+.om-side-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.om-side-lbl{font-size:11px;font-weight:700;color:rgba(167,139,250,.8);margin-bottom:8px;letter-spacing:.3px;}
+.om-side-winner{font-size:14px;font-weight:900;margin-bottom:7px;}
+.om-side-card.j-win{background:linear-gradient(160deg,rgba(91,156,246,.08),var(--bg3));border-color:rgba(91,156,246,.35);}
 .om-side-card.j-win .om-side-winner{color:var(--j);}
-.om-side-card.p-win{background:linear-gradient(160deg,rgba(251,146,60,.10),var(--bg3));border-color:rgba(251,146,60,.35);}
+.om-side-card.p-win{background:linear-gradient(160deg,rgba(251,146,60,.08),var(--bg3));border-color:rgba(251,146,60,.35);}
 .om-side-card.p-win .om-side-winner{color:var(--p);}
-.om-side-card.upcoming{opacity:.35;}
+.om-side-card.upcoming{opacity:.38;}
 .om-side-card.upcoming .om-side-winner{color:var(--muted);}
+.om-side-badge{font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;display:inline-block;}
+.om-side-card.j-win .om-side-badge{background:rgba(91,156,246,.15);color:var(--j);}
+.om-side-card.p-win .om-side-badge{background:rgba(251,146,60,.15);color:var(--p);}
+.om-side-card.upcoming .om-side-badge{background:rgba(255,255,255,.05);color:var(--muted);}
 /* 날짜 td — 기타매체 열 */
 td.om-td{background:rgba(167,139,250,.04);border-left:1px solid rgba(167,139,250,.1);z-index:1;width:52px;min-width:52px;padding:10px 4px;}
 th.om-th{background:rgba(167,139,250,.09);color:rgba(180,155,255,.85);border-left:1px solid rgba(167,139,250,.15);width:52px;min-width:52px;padding:12px 4px;}
@@ -655,19 +663,19 @@ function parseData(rows) {
       if(!wLabel) { section=null; continue; }
     }
 
-    // 개인 기타매체 점수: B열 이름 + 이후 날짜별 점수 (P59, P72 행 구조 대응)
-    // 섹션 헤더: A열 '기타매체' or B열 '기타매체'
-    if(c[0]==='기타매체'||c[0]==='기타 매체'||(c[1]==='기타매체'&&c[2]==='점수')){
+    // 개인 기타매체 점수: C60, C73 아래 — A열=직급, B열=이름, C열=점수(총합)
+    // 섹션 헤더: A열 또는 B열에 '기타매체' 포함
+    if((c[0]==='기타매체'||c[0]==='기타 매체')&&c[0]!==''&&c[1]!=='승'){
       section='otherMedia'; continue;
     }
     if(section==='otherMedia'){
       const name=c[1];
-      if(!name||name==='일평균') continue;
-      if(name==='J팀'||name==='P팀'){continue;} // 구분 헤더 스킵
-      otherMediaScores[name]=dateHeaders.map((_,i)=>{
-        const r=(row[4+i]||row[2+i]||'').trim();
-        return r===''?null:toNum(r);
-      });
+      if(!name||name==='일평균'||name==='이름') continue;
+      if(name==='J팀'||name==='P팀') continue;
+      // 빈 행이면 섹션 종료
+      if(!c[0]&&!c[1]) { section=null; continue; }
+      const score = c[2]!=='' ? toNum(c[2]) : null;
+      if(score !== null) otherMediaScores[name] = score;
       continue;
     }
 
@@ -690,9 +698,9 @@ function parseData(rows) {
     }
   }
 
-  // 개인 기타매체 점수를 각 멤버에 붙이기
+  // 개인 기타매체 점수를 각 멤버에 붙이기 (C열 단일 합계값)
   [...jTeam,...pTeam].forEach(m=>{
-    m.otherMedia = otherMediaScores[m.name] || new Array(dateHeaders.length).fill(null);
+    m.otherMedia = otherMediaScores[m.name] ?? null;
   });
 
   return {dateHeaders,jTeam,pTeam,weeklyOtherMedia};
@@ -753,15 +761,19 @@ function renderIndividualTable(){
       if(exemptNames.has(m.name))      badgeHtml = '<span class="rank-badge top">면제</span>';
       else if(eduNames.has(m.name))    badgeHtml = '<span class="rank-badge bottom">교육</span>';
 
-      // 기타매체 점수 합산
-      const omScores = (m.otherMedia||[]).filter(v=>v!==null);
-      const omTotal = omScores.length ? omScores.reduce((a,b)=>a+b,0) : null;
+      // 기타매체 점수 (C열 총합값)
+      const omTotal = m.otherMedia;
       const omHtml = omTotal !== null
         ? `<span style="font-size:11px;font-weight:700;color:rgba(180,155,255,.9)">${omTotal}</span>`
         : `<span style="color:var(--muted)">—</span>`;
 
+      // 2글자 이름 간격 맞추기
+      const displayName = m.name.length === 2
+        ? m.name[0] + '\u2003' + m.name[1]  // em space 삽입
+        : m.name;
+
       html += `<tr>
-        <td><div class="member-name"><span class="rank-dot" style="background:${tC}"></span>${m.name}<span class="tag-position">${m.rank}</span>${badgeHtml}</div></td>
+        <td><div class="member-name"><span class="rank-dot" style="background:${tC}"></span>${displayName}<span class="tag-position">${m.rank}</span>${badgeHtml}</div></td>
         <td><span class="team-chip ${chip}">${chip.toUpperCase()}</span></td>
         <td class="td-avg ${aT?'above-avg':'below-avg'}">${m.avg}</td>
         <td class="${m.transfer>0?'td-transfer':'td-transfer-zero'}">${m.transfer>0?(m.transfer/10000).toFixed(0)+'만':'-'}</td>
@@ -808,8 +820,16 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     dayResults[d]={j:jA??0,p:pA??0,winner:(jA??0)>=(pA??0)?'j':'p'};
   });
   const playedDates=dateHeaders.filter(d=>dayResults[d]);
-  const jWins=playedDates.filter(d=>dayResults[d].winner==='j').length;
-  const pWins=playedDates.filter(d=>dayResults[d].winner==='p').length;
+  // 일반 승수
+  const jDayWins=playedDates.filter(d=>dayResults[d].winner==='j').length;
+  const pDayWins=playedDates.filter(d=>dayResults[d].winner==='p').length;
+  // 기타매체 승수 (주차별 1승씩)
+  const omEntries = Object.values(weeklyOtherMedia||{});
+  const jOmWins = omEntries.filter(v=>v==='j').length;
+  const pOmWins = omEntries.filter(v=>v==='p').length;
+  // 최종 합산
+  const jWins = jDayWins + jOmWins;
+  const pWins = pDayWins + pOmWins;
   const played=playedDates.length, remaining=TOTAL_WD-played;
   const jTeamAvg=fix2(avgArr(jTeam.map(m=>m.avg)));
   const pTeamAvg=fix2(avgArr(pTeam.map(m=>m.avg)));
@@ -1524,7 +1544,7 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     sDiv.innerHTML=`<div class="om-side-card ${omCls}">
       <div class="om-side-lbl">기타매체</div>
       <div class="om-side-winner">${omTxt}</div>
-      <div style="font-size:9px;color:var(--muted);margin-top:2px">${omWinner?'승리':'예정'}</div>
+      <div class="om-side-badge">${omWinner ? (omWinner==='j'?'J팀 승':'P팀 승') : '예정'}</div>
     </div>`;
 
     wrap.appendChild(dDiv);
