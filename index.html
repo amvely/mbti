@@ -663,18 +663,21 @@ function parseData(rows) {
       if(!wLabel) { section=null; continue; }
     }
 
-    // 개인 기타매체 점수: C60, C73 아래 — A열=직급, B열=이름, C열=점수(총합)
-    // 섹션 헤더: A열 또는 B열에 '기타매체' 포함
-    if((c[0]==='기타매체'||c[0]==='기타 매체')&&c[0]!==''&&c[1]!=='승'){
+    // 개인 기타매체 점수: C59/C72 아래 — A열=직급, B열=이름, C열=점수(TOTAL)
+    // 섹션 헤더: A열 또는 B열에 '기타매체' 포함 (승 섹션과 구분)
+    if((c[0].includes('기타매체')||c[0].includes('기타 매체')||c[1].includes('기타매체')||c[1].includes('기타 매체'))&&c[1]!=='승'){
       section='otherMedia'; continue;
     }
     if(section==='otherMedia'){
       const name=c[1];
-      if(!name||name==='일평균'||name==='이름') continue;
+      // 빈 행(A,B,C 모두 비어있으면) 섹션 종료
+      if(!c[0]&&!c[1]&&!c[2]) { section=null; continue; }
+      if(!name||name==='일평균'||name==='이름'||name==='TOTAL'||name==='합계') continue;
       if(name==='J팀'||name==='P팀') continue;
-      // 빈 행이면 섹션 종료
-      if(!c[0]&&!c[1]) { section=null; continue; }
-      const score = c[2]!=='' ? toNum(c[2]) : null;
+      // C열(index 2)에 점수, 없으면 D열(index 3) 시도
+      let score = null;
+      if(c[2]!=='') score = toNum(c[2]);
+      else if(c[3]!=='') score = toNum(c[3]);
       if(score !== null) otherMediaScores[name] = score;
       continue;
     }
@@ -866,25 +869,37 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
   })();
 
   // ── 스트릭 배너 (연승) + MVP 배너 ──
+  // 기타매체 승리를 포함한 통합 타임라인 구성 (주차 순서로 일별+기타매체 순서 배치)
+  const HOLIDAYS_STREAK = ['03월 02일'];
+  const combinedTimeline = []; // {winner, label, isOm}
+  WEEK_SCHEDULE.forEach(wk => {
+    wk.dates.filter(d => !HOLIDAYS_STREAK.includes(d) && dayResults[d]).forEach(d => {
+      combinedTimeline.push({ winner: dayResults[d].winner, label: shortD(d), isOm: false });
+    });
+    const omW = (weeklyOtherMedia||{})[wk.label];
+    if(omW) combinedTimeline.push({ winner: omW, label: '기타', isOm: true });
+  });
+
   (function renderBanners(){
     const streakBanner = document.getElementById('streak-banner');
     const mvpBanner = document.getElementById('mvp-banner');
     if(!streakBanner || !mvpBanner || played < 1) return;
 
-    // ── 연승 계산 ──
+    // ── 통합 타임라인 기준 연승 계산 ──
     let streak = 0, streakTeam = null;
-    for(let i = playedDates.length - 1; i >= 0; i--){
-      const w = dayResults[playedDates[i]].winner;
+    for(let i = combinedTimeline.length - 1; i >= 0; i--){
+      const w = combinedTimeline[i].winner;
       if(streakTeam === null) streakTeam = w;
       if(w === streakTeam) streak++;
       else break;
     }
 
-    // ── 연승 배너 렌더링 ──
-    const recentDots = playedDates.slice(-5).map(d => {
-      const w = dayResults[d].winner;
-      const isLast = d === playedDates[playedDates.length-1];
-      return `<div class="s-dot ${isLast && streak >= 2 ? 'fire' : w}">${w==='j'?'J':'P'}</div>`;
+    // ── 최근 5개 (통합 타임라인 기준) dots ──
+    const recent5 = combinedTimeline.slice(-5);
+    const recentDots = recent5.map((ev, idx) => {
+      const isLast = idx === recent5.length - 1;
+      const dotLabel = ev.isOm ? '📺' : ev.winner.toUpperCase();
+      return `<div class="s-dot ${isLast && streak >= 2 ? 'fire' : ev.winner}" title="${ev.label}">${dotLabel}</div>`;
     }).join('');
 
     let streakIcon, streakMain, streakSub, streakCls;
@@ -975,10 +990,10 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     const jRecentAvg = teamRecentAvg(jTeam);
     const pRecentAvg = teamRecentAvg(pTeam);
 
-    // 현재 연승 스트릭 (renderBanners와 동일 로직)
+    // 현재 연승 스트릭 (통합 타임라인 기준 - 기타매체 포함)
     let streak = 0, streakTeam = null;
-    for(let i = playedDates.length - 1; i >= 0; i--){
-      const w = dayResults[playedDates[i]].winner;
+    for(let i = combinedTimeline.length - 1; i >= 0; i--){
+      const w = combinedTimeline[i].winner;
       if(streakTeam === null) streakTeam = w;
       if(w === streakTeam) streak++;
       else break;
@@ -1557,11 +1572,13 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     // 기타매체 카드 — day-card와 완전히 동일한 구조/크기
     const omCard = document.createElement('div');
     omCard.className = `day-card ${omCls}`;
-    if(omWinner) omCard.style.cssText = `border-color:rgba(167,139,250,.4);background:linear-gradient(160deg,rgba(167,139,250,.07),var(--bg3))`;
+    // J팀/P팀 컬러 동일하게 적용
+    if(omWinner==='j') omCard.style.cssText = `border-color:rgba(91,156,246,.4);background:linear-gradient(160deg,rgba(91,156,246,.10),var(--bg3))`;
+    else if(omWinner==='p') omCard.style.cssText = `border-color:rgba(251,146,60,.4);background:linear-gradient(160deg,rgba(251,146,60,.10),var(--bg3))`;
     omCard.innerHTML = `
-      <div class="day-date" style="color:rgba(167,139,250,.8)">기타매체</div>
+      <div class="day-date" style="color:var(--muted)">기타매체</div>
       <div class="day-scores"><span class="day-sc ${omWinner||''}" style="${!omWinner?'color:var(--muted)':''};font-size:18px">${omTxt}</span></div>
-      <div class="day-badge" style="${omWinner==='j'?'background:rgba(91,156,246,.15);color:var(--j)':omWinner==='p'?'background:rgba(251,146,60,.15);color:var(--p)':'background:rgba(255,255,255,.05);color:var(--muted)'}">${omWinner?(omWinner==='j'?'J팀 승':'P팀 승'):'예정'}</div>`;
+      <div class="day-badge ${omWinner||'tbd'}">${omWinner?(omWinner==='j'?'J팀 승':'P팀 승'):'예정'}</div>`;
     wrap.appendChild(omCard);
 
     block.appendChild(wrap);
