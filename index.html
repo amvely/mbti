@@ -1024,8 +1024,10 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     const jStreakBonus = streakTeam === 'j' ? Math.min(streak * 8, 32) : 0;
     const pStreakBonus = streakTeam === 'p' ? Math.min(streak * 8, 32) : 0;
 
-    const jMom = (jRecent/r5Total)*40 + (jRecentAvg/avgTotal)*30 + (jStreakBonus/32)*20 + (jTeamAvg/totalAvgSum)*10;
-    const pMom = (pRecent/r5Total)*40 + (pRecentAvg/avgTotal)*30 + (pStreakBonus/32)*20 + (pTeamAvg/totalAvgSum)*10;
+    // 모멘텀 = 최근5경기 승률(60%) + 연승스트릭(25%) + 전체누적승률(15%)
+    const totalWins = jWins + pWins || 1;
+    const jMom = (jRecent/r5Total)*60 + (jStreakBonus/32)*25 + (jWins/totalWins)*15;
+    const pMom = (pRecent/r5Total)*60 + (pStreakBonus/32)*25 + (pWins/totalWins)*15;
     const momTotal = jMom + pMom || 1;
     const jMomPct = Math.round((jMom / momTotal) * 100);
     const pMomPct = 100 - jMomPct;
@@ -1050,21 +1052,15 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
     `;
     document.getElementById('mom-j-pct').textContent = jMomPct + '%';
     document.getElementById('mom-p-pct').textContent = pMomPct + '%';
-    document.getElementById('momentum-meta').textContent = `최근 ${recent.length}경기 · 점수 / 연승 / 승률 반영`;
+    document.getElementById('momentum-meta').textContent = `최근 ${recent.length}경기 · 승률(60%) / 연승(25%) / 누적승률(15%) 반영`;
 
     // 팩터 카드 (4가지 세부 지표)
     const factors = [
       {
-        icon: '🏆', lbl: '최근 승률',
-        jV: jRecent, pV: pRecent, total: r5Total * 0.4,
-        jTxt: `${jRecent}/${recent.length}`, pTxt: `${pRecent}/${recent.length}`,
+        icon: '🏆', lbl: '최근 5경기 승률',
+        jV: jRecent, pV: pRecent, total: r5Total,
+        jTxt: `${jRecent}승 ${recent.length-jRecent}패`, pTxt: `${pRecent}승 ${recent.length-pRecent}패`,
         winner: jRecent > pRecent ? 'j' : pRecent > jRecent ? 'p' : 'tie'
-      },
-      {
-        icon: '📈', lbl: '최근 평균점',
-        jV: jRecentAvg, pV: pRecentAvg, total: avgTotal,
-        jTxt: `${jRecentAvg}점`, pTxt: `${pRecentAvg}점`,
-        winner: jRecentAvg > pRecentAvg ? 'j' : pRecentAvg > jRecentAvg ? 'p' : 'tie'
       },
       {
         icon: '🔥', lbl: '연승 스트릭',
@@ -1073,10 +1069,10 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
         winner: streakTeam==='j'&&streak>=2?'j':streakTeam==='p'&&streak>=2?'p':'tie'
       },
       {
-        icon: '💥', lbl: '전체 평균점',
-        jV: jTeamAvg, pV: pTeamAvg, total: totalAvgSum,
-        jTxt: `${jTeamAvg}점`, pTxt: `${pTeamAvg}점`,
-        winner: jTeamAvg > pTeamAvg ? 'j' : pTeamAvg > jTeamAvg ? 'p' : 'tie'
+        icon: '📊', lbl: '전체 누적 승률',
+        jV: jWins, pV: pWins, total: totalWins,
+        jTxt: `${jWins}승`, pTxt: `${pWins}승`,
+        winner: jWins > pWins ? 'j' : pWins > jWins ? 'p' : 'tie'
       }
     ];
     const winnerLabel = { j: 'J팀 ↑', p: 'P팀 ↑', tie: '동률' };
@@ -1604,23 +1600,41 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
       ...jTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2),
       ...pTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2)
     ].map(m=>m.name));
+    const eduSort=(a,b)=>{
+      if(a.transfer!==b.transfer) return a.transfer-b.transfer;
+      const aOM=a.otherMedia??Infinity, bOM=b.otherMedia??Infinity;
+      if(aOM!==bOM) return aOM-bOM;
+      return a.avg-b.avg;
+    };
     eduNames = new Set([
-      ...jTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2),
-      ...pTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2)
+      ...jTeam.filter(m=>!m.isIntern).sort(eduSort).slice(0,2),
+      ...pTeam.filter(m=>!m.isIntern).sort(eduSort).slice(0,2)
     ].map(m=>m.name));
   } else {
     const jLeading2 = jWins > pWins;
     const winTeam2  = jLeading2 ? jTeam : pTeam;
     const loseTeam2 = jLeading2 ? pTeam : jTeam;
+    const eduSort2=(a,b)=>{
+      if(a.transfer!==b.transfer) return a.transfer-b.transfer;
+      const aOM=a.otherMedia??Infinity, bOM=b.otherMedia??Infinity;
+      if(aOM!==bOM) return aOM-bOM;
+      return a.avg-b.avg;
+    };
     exemptNames = new Set(winTeam2.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2).map(m=>m.name));
-    eduNames    = new Set(loseTeam2.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2).map(m=>m.name));
+    eduNames    = new Set(loseTeam2.filter(m=>!m.isIntern).sort(eduSort2).slice(0,2).map(m=>m.name));
   }
 
   const jLeading=jWins>=pWins;
   const winTeam=jLeading?jTeam:pTeam, loseTeam=jLeading?pTeam:jTeam;
   const wL=jLeading?'j':'p', lL=jLeading?'p':'j';
+  const eduSortFn=(a,b)=>{
+    if(a.transfer!==b.transfer) return a.transfer-b.transfer;
+    const aOM=a.otherMedia??Infinity, bOM=b.otherMedia??Infinity;
+    if(aOM!==bOM) return aOM-bOM;
+    return a.avg-b.avg;
+  };
   const exemptList=winTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2);
-  const eduList=loseTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2);
+  const eduList=loseTeam.filter(m=>!m.isIntern).sort(eduSortFn).slice(0,2);
 
   const buildStakesList=(list,team)=>{
     const frag=document.createDocumentFragment();
@@ -1666,8 +1680,8 @@ function render({dateHeaders, jTeam, pTeam, weeklyOtherMedia}){
   if(isTie){
     const jExemptList=jTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2);
     const pExemptList=pTeam.filter(m=>!m.isIntern).sort((a,b)=>b.transfer-a.transfer).slice(0,2);
-    const jEduList=jTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2);
-    const pEduList=pTeam.filter(m=>!m.isIntern).sort((a,b)=>a.transfer-b.transfer).slice(0,2);
+    const jEduList=jTeam.filter(m=>!m.isIntern).sort(eduSortFn).slice(0,2);
+    const pEduList=pTeam.filter(m=>!m.isIntern).sort(eduSortFn).slice(0,2);
     // 동점: exempt 설명 업데이트
     document.querySelector('.stakes-card.exempt .stakes-desc').textContent='동점 — 양팀 이관매출 상위 2인 (인턴 제외)';
     document.querySelector('.stakes-card.edu .stakes-desc').textContent='동점 — 양팀 이관매출 하위 2인 (인턴 제외)';
